@@ -13,5 +13,4 @@ UCLASS()
 class SPACEARCADE_API APlayerShipController : public APlayerController
 {
 	GENERATED_BODY()
-	
 };

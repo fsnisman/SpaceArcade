@@ -46,9 +46,16 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float MoveSpeed = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float ForwardSmootheness = 0.1f;
+
 public:
 
 	APlayerShipPawn();
+
 
 protected:
 
