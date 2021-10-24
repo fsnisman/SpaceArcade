@@ -1,9 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameStructs.h"
 #include "HealthComponent.generated.h"
 
 
@@ -12,17 +11,30 @@ class SPACEARCADE_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, DamageValue);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDie);
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
+		float MaxHealth = 10;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
+		float CurrentHealth;
+
+	UPROPERTY(BlueprintAssignable)
+		FOnDie OnDie;
+
+	UPROPERTY(BlueprintAssignable)
+		FOnHealthChanged OnDamaged;
+
 public:	
-	// Sets default values for this component's properties
 	UHealthComponent();
 
-protected:
-	// Called when the game starts
+	bool TakeDamage(FDamageData DamageData);
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	float GetHealth() const;
 
-		
+	float GetHealthState() const;
 };

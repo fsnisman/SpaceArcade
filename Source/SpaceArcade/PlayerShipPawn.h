@@ -7,6 +7,9 @@
 
 #include "Engine/TargetPoint.h"
 
+#include "DamageTaker.h"
+#include "HealthComponent.h"
+
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <GameFramework/SpringArmComponent.h>
@@ -29,7 +32,7 @@ class UBoxComponent;
 
 
 UCLASS()
-class SPACEARCADE_API APlayerShipPawn : public APawn
+class SPACEARCADE_API APlayerShipPawn : public APawn, public IDamageTaker
 {
 	GENERATED_BODY()
 
@@ -46,6 +49,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UHealthComponent* HealthComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
 
@@ -56,16 +62,20 @@ public:
 
 	APlayerShipPawn();
 
+	UFUNCTION()
+		bool TakeDamage(FDamageData DamageData) override;
 
 protected:
-
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+		void Die();
+
+	UFUNCTION()
+		void DamageTaked(float DamageValue);
+
 public:	
-
 	virtual void Tick(float DeltaTime) override;
-
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };

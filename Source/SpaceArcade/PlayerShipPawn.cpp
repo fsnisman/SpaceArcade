@@ -10,6 +10,10 @@ APlayerShipPawn::APlayerShipPawn()
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
+	HealthComponent->OnDie.AddDynamic(this, &APlayerShipPawn::Die);
+	HealthComponent->OnDamaged.AddDynamic(this, &APlayerShipPawn::DamageTaked);
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
 	SpringArm->bDoCollisionTest = false;
@@ -21,21 +25,35 @@ APlayerShipPawn::APlayerShipPawn()
 	Camera->SetupAttachment(SpringArm);
 }
 
-// Called when the game starts or when spawned
 void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
+bool APlayerShipPawn::TakeDamage(FDamageData DamageData)
+{
+	return HealthComponent->TakeDamage(DamageData);
+}
+
+void APlayerShipPawn::Die()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.bNoFail = true;
+	Destroy();
+}
+
+void APlayerShipPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+}
+
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
