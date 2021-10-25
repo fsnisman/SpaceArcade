@@ -16,7 +16,7 @@ class SPACEARCADE_API UHealthComponent : public UActorComponent
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
-		float MaxHealth = 10;
+		float MaxHealth = 3;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
 		float CurrentHealth;

@@ -16,5 +16,5 @@ class SPACEARCADE_API IDamageTaker
 	GENERATED_BODY()
 
 public:
-	virtual bool TakeDamage(FDamageData DamageData) = 0;
+	//virtual bool TDamage(FDamageData DamageData) = 0;
 };

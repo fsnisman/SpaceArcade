@@ -9,10 +9,16 @@ struct FDamageData
 {
     GENERATED_BODY()
 
-        UPROPERTY()
+    UPROPERTY()
         float DamageValue;
     UPROPERTY()
         AActor* Instigator;
     UPROPERTY()
         AActor* DamageMaker;
+};
+
+UENUM(BlueprintType)
+enum class ECannonType : uint8 {
+    FireProjectile = 0 UMETA(DisplayName = "Use projectile"),
+    FireSpecial = 1  UMETA(DisplayName = "Use special projectile")
 };

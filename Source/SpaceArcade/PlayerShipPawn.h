@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 
 #include "Engine/TargetPoint.h"
 
-#include "DamageTaker.h"
+//#include "DamageTaker.h"
 #include "HealthComponent.h"
 
 #include <Camera/CameraComponent.h>
@@ -27,12 +25,13 @@
 
 class UStaticMeshComponent;
 class USpringArmComponent;
+class UHealthComponent;
 class UCameraComponent;
 class UBoxComponent;
 
 
 UCLASS()
-class SPACEARCADE_API APlayerShipPawn : public APawn, public IDamageTaker
+class SPACEARCADE_API APlayerShipPawn : public APawn
 {
 	GENERATED_BODY()
 
@@ -50,29 +49,29 @@ protected:
 		UBoxComponent* HitCollider;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* ProjectTileSetupArrow;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveSpeed = 100.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float ForwardSmootheness = 0.1f;
+		float MoveSpeed = 1.f;
 
 public:
 
 	APlayerShipPawn();
 
-	UFUNCTION()
-		bool TakeDamage(FDamageData DamageData) override;
+	/*UFUNCTION()
+		bool TDamage(FDamageData DamageData) override;*/
 
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
+	/*UFUNCTION()
 		void Die();
 
 	UFUNCTION()
-		void DamageTaked(float DamageValue);
+		void DamageTaked(float DamageValue);*/
 
 public:	
 	virtual void Tick(float DeltaTime) override;
