@@ -14,8 +14,8 @@ APlayerShipPawn::APlayerShipPawn()
 	ProjectTileSetupArrow->AttachToComponent(BodyMesh, FAttachmentTransformRules::KeepRelativeTransform);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
-	/*HealthComponent->OnDie.AddDynamic(this, &APlayerShipPawn::Die);
-	HealthComponent->OnDamaged.AddDynamic(this, &APlayerShipPawn::DamageTaked);*/
+	HealthComponent->OnDie.AddDynamic(this, &APlayerShipPawn::Die);
+	HealthComponent->OnDamaged.AddDynamic(this, &APlayerShipPawn::DamageTaked);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
@@ -34,22 +34,22 @@ void APlayerShipPawn::BeginPlay()
 	
 }
 
-//bool APlayerShipPawn::TDamage(FDamageData DamageData)
-//{
-//	return HealthComponent->TakeDamage(DamageData);
-//}
+bool APlayerShipPawn::TDamage(FDamageData DamageData)
+{
+	return HealthComponent->TakeDamage(DamageData);
+}
 
-//void APlayerShipPawn::Die()
-//{
-//	FActorSpawnParameters SpawnParams;
-//	SpawnParams.bNoFail = true;
-//	Destroy();
-//}
+void APlayerShipPawn::Die()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.bNoFail = true;
+	Destroy();
+}
 
-//void APlayerShipPawn::DamageTaked(float DamageValue)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
-//}
+void APlayerShipPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+}
 
 void APlayerShipPawn::Tick(float DeltaTime)
 {

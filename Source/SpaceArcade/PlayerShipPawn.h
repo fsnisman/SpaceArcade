@@ -5,7 +5,6 @@
 
 #include "Engine/TargetPoint.h"
 
-//#include "DamageTaker.h"
 #include "HealthComponent.h"
 
 #include <Camera/CameraComponent.h>
@@ -61,17 +60,17 @@ public:
 
 	APlayerShipPawn();
 
-	/*UFUNCTION()
-		bool TDamage(FDamageData DamageData) override;*/
+	UFUNCTION()
+		bool TDamage(FDamageData DamageData);
 
 protected:
 	virtual void BeginPlay() override;
 
-	/*UFUNCTION()
+	UFUNCTION()
 		void Die();
 
 	UFUNCTION()
-		void DamageTaked(float DamageValue);*/
+		void DamageTaked(float DamageValue);
 
 public:	
 	virtual void Tick(float DeltaTime) override;
