@@ -18,7 +18,7 @@ struct FDamageData
 };
 
 UENUM(BlueprintType)
-enum class ECannonType : uint8 {
+enum class EProjectType : uint8 {
     FireProjectile = 0 UMETA(DisplayName = "Use projectile"),
     FireSpecial = 1  UMETA(DisplayName = "Use special projectile")
 };

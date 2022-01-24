@@ -6,6 +6,7 @@
 #include "Engine/TargetPoint.h"
 
 #include "HealthComponent.h"
+#include "ProjectTile.h"
 
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>
@@ -48,13 +49,36 @@ protected:
 		UBoxComponent* HitCollider;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* ProjectTileSetupArrow;
+		UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UHealthComponent* HealthComponent;
+		UArrowComponent* ProjectileSpawnPointOne;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* ProjectileSpawnPointTwo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectTile> ProjectileClass;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* ShootEffectOne;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* ShootEffectTwo;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		EProjectType Type = EProjectType::FireProjectile;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		float FireRange = 1000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 1.f;
+
+	FTimerHandle TimerHandle;
 
 public:
 
@@ -72,8 +96,14 @@ protected:
 	UFUNCTION()
 		void DamageTaked(float DamageValue);
 
+	UFUNCTION()
+		void Fire();
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	
+	int32 CallTracker = 3;
+	bool ReadyFire = true;
 };

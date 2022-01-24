@@ -10,8 +10,10 @@ APlayerShipPawn::APlayerShipPawn()
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
 
-	ProjectTileSetupArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Project Tile Setup 1"));
-	ProjectTileSetupArrow->AttachToComponent(BodyMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	ProjectileSpawnPointOne = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point One"));
+	ProjectileSpawnPointOne->SetupAttachment(BodyMesh);
+	ProjectileSpawnPointTwo = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point Two"));
+	ProjectileSpawnPointTwo->SetupAttachment(BodyMesh);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
 	HealthComponent->OnDie.AddDynamic(this, &APlayerShipPawn::Die);
@@ -24,6 +26,14 @@ APlayerShipPawn::APlayerShipPawn()
 	SpringArm->bInheritYaw = true;
 	SpringArm->bInheritRoll = true;
 
+	ShootEffectOne = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect One"));
+	ShootEffectOne->SetupAttachment(ProjectileSpawnPointOne);
+	ShootEffectTwo = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect Two"));
+	ShootEffectTwo->SetupAttachment(ProjectileSpawnPointTwo);
+
+	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Shoot audio effect"));
+	AudioEffect->SetupAttachment(ProjectileSpawnPointOne);
+
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 }
@@ -32,6 +42,7 @@ void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.3f, true, 0.5f);
 }
 
 bool APlayerShipPawn::TDamage(FDamageData DamageData)
@@ -54,12 +65,35 @@ void APlayerShipPawn::DamageTaked(float DamageValue)
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void APlayerShipPawn::Fire()
+{
+	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+
+	ShootEffectOne->ActivateSystem();
+	ShootEffectTwo->ActivateSystem();
+	AudioEffect->Play();
+
+	if (Type == EProjectType::FireProjectile)
+	{
+		AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
+		if (projectileOne)
+		{
+			projectileOne->Start();
+		}
+
+		AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
+		if (projectileTwo)
+		{
+			projectileTwo->Start();
+		}
+	}
 }
 
