@@ -36,16 +36,21 @@ class SPACEARCADE_API APlayerShipPawn : public APawn
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+
+	//=========================
+	// Create Component for Ship
+	//=========================
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components") 
 		UStaticMeshComponent* BodyMesh;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components") 
 		USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components") 
 		UCameraComponent* Camera;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components") 
 		UBoxComponent* HitCollider;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -72,13 +77,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		EProjectType Type = EProjectType::FireProjectile;
 
+	//=========================
+	// Create Variables for Ship
+	//=========================
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRange = 1000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 1.f;
 
-	FTimerHandle TimerHandle;
+	FTimerHandle TimerHandle; //Timer
 
 public:
 
@@ -100,10 +109,9 @@ protected:
 		void Fire();
 
 public:	
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	
-	int32 CallTracker = 3;
-	bool ReadyFire = true;
+	bool ReadyFire = true; //Cheack on Ready Shoot Fire
 };

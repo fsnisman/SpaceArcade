@@ -4,20 +4,40 @@ APlayerShipPawn::APlayerShipPawn()
 {
  	PrimaryActorTick.bCanEverTick = true;
 
+	//=========================
+	// Create Static Mesh for Ship
+	//=========================
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship body"));
 	RootComponent = BodyMesh;
 
+	//=========================
+	// Create Hit Colloder for Ship
+	//=========================
+
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
+
+	//=========================
+	// Create Spawn Arrow for ProjectTile
+	//=========================
 
 	ProjectileSpawnPointOne = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point One"));
 	ProjectileSpawnPointOne->SetupAttachment(BodyMesh);
 	ProjectileSpawnPointTwo = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point Two"));
 	ProjectileSpawnPointTwo->SetupAttachment(BodyMesh);
 
+	//=========================
+	// Create Health Component for Ship
+	//=========================
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
 	HealthComponent->OnDie.AddDynamic(this, &APlayerShipPawn::Die);
 	HealthComponent->OnDamaged.AddDynamic(this, &APlayerShipPawn::DamageTaked);
+
+	//=========================
+	// Create Spring Arm for Camera
+	//=========================
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
@@ -26,13 +46,25 @@ APlayerShipPawn::APlayerShipPawn()
 	SpringArm->bInheritYaw = true;
 	SpringArm->bInheritRoll = true;
 
+	//=========================
+	// Create Shoot Effect for Cannon
+	//=========================
+
 	ShootEffectOne = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect One"));
 	ShootEffectOne->SetupAttachment(ProjectileSpawnPointOne);
 	ShootEffectTwo = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect Two"));
 	ShootEffectTwo->SetupAttachment(ProjectileSpawnPointTwo);
 
+	//=========================
+	// Create Audio Effect for Cannon
+	//=========================
+
 	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Shoot audio effect"));
 	AudioEffect->SetupAttachment(ProjectileSpawnPointOne);
+
+	//=========================
+	// Create Camera for Ship
+	//=========================
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -42,24 +74,7 @@ void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.3f, true, 0.5f);
-}
-
-bool APlayerShipPawn::TDamage(FDamageData DamageData)
-{
-	return HealthComponent->TakeDamage(DamageData);
-}
-
-void APlayerShipPawn::Die()
-{
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.bNoFail = true;
-	Destroy();
-}
-
-void APlayerShipPawn::DamageTaked(float DamageValue)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.3f, true, 0.5f); //Timer for Shoot Fire
 }
 
 void APlayerShipPawn::Tick(float DeltaTime)
@@ -70,13 +85,31 @@ void APlayerShipPawn::Tick(float DeltaTime)
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
+	// Function for Health Point Ship
+bool APlayerShipPawn::TDamage(FDamageData DamageData)
+{
+	return HealthComponent->TakeDamage(DamageData);
+}
+	
+	// Function for Die Ship
+void APlayerShipPawn::Die()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.bNoFail = true;
+	Destroy();
+}
+
+	// Finction for Track DamageTaked
+void APlayerShipPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+}
+
+	// Finction for Shoot Ship
 void APlayerShipPawn::Fire()
 {
-	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
-
 	ShootEffectOne->ActivateSystem();
 	ShootEffectTwo->ActivateSystem();
 	AudioEffect->Play();
