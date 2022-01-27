@@ -73,8 +73,8 @@ APlayerShipPawn::APlayerShipPawn()
 void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.3f, true, 0.5f); //Timer for Shoot Fire
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.1f, true, 0.5f); //Timer for Shoot Fire
 }
 
 void APlayerShipPawn::Tick(float DeltaTime)
@@ -90,7 +90,8 @@ void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// Function for Health Point Ship
 bool APlayerShipPawn::TDamage(FDamageData DamageData)
 {
-	return HealthComponent->TakeDamage(DamageData);
+	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageData.DamageValue, HealthComponent->GetHealth());
+	return HealthComponent->TDamage(DamageData);
 }
 	
 	// Function for Die Ship
@@ -104,7 +105,7 @@ void APlayerShipPawn::Die()
 	// Finction for Track DamageTaked
 void APlayerShipPawn::DamageTaked(float DamageValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
 	// Finction for Shoot Ship

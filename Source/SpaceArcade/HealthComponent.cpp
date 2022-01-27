@@ -1,6 +1,6 @@
 #include "HealthComponent.h"
 
-
+// Function for assing a value Health Point
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -14,8 +14,8 @@ void UHealthComponent::BeginPlay()
 	CurrentHealth = MaxHealth;
 }
 
-
-bool UHealthComponent::TakeDamage(FDamageData DamageData)
+// Function Take Damege for Health Component 
+bool UHealthComponent::TDamage(FDamageData DamageData)
 {
 	float TakedDamageValue = DamageData.DamageValue;
 	CurrentHealth -= TakedDamageValue;
@@ -35,15 +35,22 @@ bool UHealthComponent::TakeDamage(FDamageData DamageData)
 	return bWasDestroyed;
 }
 
-
+// Function for get Health Point
 float UHealthComponent::GetHealth() const
 {
 	return CurrentHealth;
 }
 
+// Function for check Health Point
 float UHealthComponent::GetHealthState() const
 {
 	return CurrentHealth / MaxHealth;
 }
 
-
+// Function for Add Health Point
+void UHealthComponent::AddHealth(float AddiditionalHealthValue)
+{
+	CurrentHealth += AddiditionalHealthValue;
+	if (CurrentHealth > MaxHealth)
+		CurrentHealth = MaxHealth;
+}

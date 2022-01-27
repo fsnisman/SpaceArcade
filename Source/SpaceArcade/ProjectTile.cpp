@@ -1,7 +1,8 @@
 
 #include "ProjectTile.h"
-#include "Components/StaticMeshComponent.h"
+#include "DamageTaker.h"
 #include "TimerManager.h"
+#include "PlayerShipPawn.h"
 
 AProjectTile::AProjectTile()
 {
@@ -39,9 +40,43 @@ void AProjectTile::Start()
 	// Function Collision for Projectile
 void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	AActor* owner = GetOwner();
+	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
-	//OtherActor->Destroy();
-	Destroy();
+
+	if (playerShip == OtherActor)
+	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Player Ship");
+		return;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Enemy Ship");
+
+		if (OtherActor != owner && OtherActor != ownerByOwner)
+		{
+			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
+			if (damageTakerActor)
+			{
+				FDamageData damageData;
+				damageData.DamageValue = Damage;
+				damageData.Instigator = owner;
+				damageData.DamageMaker = this;
+
+				damageTakerActor->TDamage(damageData);
+			}
+			else
+			{
+				OtherActor->Destroy();
+			}
+
+			Destroy();
+		}
+
+	}
+	
 }
 
 	// Function Move for Projectile

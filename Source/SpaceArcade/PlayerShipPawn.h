@@ -5,6 +5,7 @@
 
 #include "Engine/TargetPoint.h"
 
+#include "DamageTaker.h"
 #include "HealthComponent.h"
 #include "ProjectTile.h"
 
@@ -31,7 +32,7 @@ class UBoxComponent;
 
 
 UCLASS()
-class SPACEARCADE_API APlayerShipPawn : public APawn
+class SPACEARCADE_API APlayerShipPawn : public APawn, public IDamageTaker
 {
 	GENERATED_BODY()
 
@@ -85,7 +86,10 @@ protected:
 		float FireRange = 1000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveSpeed = 1.f;
+		float MoveSpeedX = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float MoveSpeedY = 1.f;
 
 	FTimerHandle TimerHandle; //Timer
 
@@ -112,6 +116,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	bool ReadyFire = true; //Cheack on Ready Shoot Fire
+
+	bool ReadyFire = true; //Check on Ready Shoot Fire
 };

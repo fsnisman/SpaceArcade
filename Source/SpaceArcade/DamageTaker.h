@@ -1,3 +1,7 @@
+//=========================
+// Interface Class Damage
+//=========================
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -16,5 +20,5 @@ class SPACEARCADE_API IDamageTaker
 	GENERATED_BODY()
 
 public:
-	//virtual bool TDamage(FDamageData DamageData) = 0;
+	virtual bool TDamage(FDamageData DamageData) = 0;
 };

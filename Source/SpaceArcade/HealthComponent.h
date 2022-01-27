@@ -11,10 +11,19 @@ class SPACEARCADE_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	//=========================
+	// Create DELEGATE Health Component for check Health Point
+	//=========================
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, DamageValue);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDie);
 
 public:
+
+	//=========================
+	// Create Variables for Health Component
+	//=========================
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
 		float MaxHealth = 3;
 
@@ -27,14 +36,21 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnHealthChanged OnDamaged;
 
-public:	
+public:
+
+	//=========================
+	// Create Function for Health Component
+	//=========================
+
 	UHealthComponent();
 
-	bool TakeDamage(FDamageData DamageData);
+	bool TDamage(FDamageData DamageData);
 
 	virtual void BeginPlay() override;
 
 	float GetHealth() const;
 
 	float GetHealthState() const;
+
+	void AddHealth(float AddiditionalHealthValue);
 };

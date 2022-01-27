@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "Components/StaticMeshComponent.h"
+#include "Components/BillboardComponent.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProjectTile.generated.h"
