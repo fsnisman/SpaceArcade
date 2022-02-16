@@ -1,50 +1,76 @@
 
 #include "AIEnemyController.h"
 #include "EnemyAIPawn.h"
-#include "Engine.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetStringLibrary.h"
 #include "DrawDebugHelpers.h"
 
 void AAIEnemyController::BeginPlay()
 {
     Super::BeginPlay();
-    
+    Initalize();
+}
+
+void AAIEnemyController::Initalize()
+{
     EnemyShipAIPawn = Cast<AEnemyAIPawn>(GetPawn());
 
-    FVector pawnLocation = EnemyShipAIPawn->GetActorLocation();
-    MovementAccurancy = EnemyShipAIPawn->GetMovementAccurancy();
-    TArray<FVector> points = EnemyShipAIPawn->GetPatrollingPoints();
-    for (FVector point : points)
+    if (EnemyShipAIPawn)
     {
-        PatrollingPoints.Add(point + pawnLocation);
+        PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+        FVector pawnLocation = EnemyShipAIPawn->GetActorLocation();
+        MovementAccurancy = EnemyShipAIPawn->GetMovementAccurancy();
+        TArray<FVector> points = EnemyShipAIPawn->GetPatrollingPoints();
+
+        for (FVector point : points)
+        {
+            PatrollingPoints.Add(point + pawnLocation);
+        }
+
+        CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
     }
-    CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
 }
 
 void AAIEnemyController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (CurrentPatrolPointIndex == INDEX_NONE)
+    if (!EnemyShipAIPawn)
     {
-        EnemyShipAIPawn->FMovementComponent();
+        Initalize();
+    }
+
+    if (!EnemyShipAIPawn)
+    {
         return;
     }
 
-    EnemyShipAIPawn->FMovementComponent();
+    if (CurrentPatrolPointIndex == INDEX_NONE)
+    {
+        EnemyShipAIPawn->FMovementComponent(0.f);
+        return;
+    }
 
-    bool CheckRotation = false;
+    EnemyShipAIPawn->FMovementComponent(1.f);
 
+    float rotationValue = GetRotationgValue();
+    EnemyShipAIPawn->FRotationComponent(rotationValue);
+
+    
+}
+
+
+float AAIEnemyController::GetRotationgValue()
+{
     FVector currentPoint = PatrollingPoints[CurrentPatrolPointIndex];
     FVector pawnLocation = EnemyShipAIPawn->GetActorLocation();
     if (FVector::Distance(currentPoint, pawnLocation) <= MovementAccurancy)
     {
-        CheckRotation = true;
         CurrentPatrolPointIndex++;
         if (CurrentPatrolPointIndex >= PatrollingPoints.Num())
         {
-            CurrentPatrolPointIndex = 0;
+            EnemyShipAIPawn->Destroy();
+            Destroy();
         }
     }
 
@@ -69,16 +95,82 @@ void AAIEnemyController::Tick(float DeltaTime)
         rotationValue = -rotationValue;
     }
 
-    //UE_LOG(LogTemp, Warning, TEXT("AI Rotation forwardAngle: %f rightAngle: %f rotationValue: %f"), forwardAngle, rightAngle, rotationValue);
-    
-    /*if (CheckRotation == true)
-    {
-        EnemyShipAIPawn->FRotationComponent(1.f);
-    }
-    else
-    {
-        EnemyShipAIPawn->FRotationComponent(0.f);
-    }*/
-
-    EnemyShipAIPawn->FRotationComponent(rotationValue);
+    return rotationValue;
 }
+
+//void AAIEnemyController::Targeting()
+//{
+//    /*if (CanFire())
+//    {
+//        Fire();
+//    }
+//    else
+//    {
+//        RotateToPlayer();
+//    }*/
+//}
+//
+//
+//void AAIEnemyController::RotateToPlayer()
+//{
+//    if (IsPlayerInRange() && PlayerPawn)
+//    {
+//        EnemyShipAIPawn->RotateArrowTo(PlayerPawn->GetActorLocation());
+//    }
+//}
+//
+//bool AAIEnemyController::IsPlayerInRange()
+//{
+//    if (PlayerPawn)
+//    {
+//        return FVector::Distance(EnemyShipAIPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
+//    }
+//    return false;
+//}
+//
+//bool AAIEnemyController::IsPlayerSeen()
+//{
+//    if (PlayerPawn)
+//    {
+//        FVector playerPos = PlayerPawn->GetActorLocation();
+//        FVector eyesPos = EnemyShipAIPawn->GetEyesPosition();
+//
+//        FHitResult hitResult;
+//        FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+//        traceParams.bTraceComplex = true;
+//        traceParams.AddIgnoredActor(EnemyShipAIPawn);
+//        traceParams.bReturnPhysicalMaterial = false;
+//
+//        if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
+//        {
+//
+//            if (hitResult.Actor.Get())
+//            {
+//                DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
+//                return hitResult.Actor.Get() == PlayerPawn;
+//            }
+//        }
+//        DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Cyan, false, 0.5f, 0, 10);
+//        return false;
+//    }
+//    return false;
+//}
+//
+//bool AAIEnemyController::CanFire()
+//{
+//    if (!IsPlayerSeen())
+//    {
+//        return false;
+//    }
+//
+//    FVector targetingDir = EnemyShipAIPawn->GetArrowForwardVector();
+//    FVector dirToPlayer = PlayerPawn->GetActorLocation() - EnemyShipAIPawn->GetActorLocation();
+//    dirToPlayer.Normalize();
+//    float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetingDir, dirToPlayer)));
+//    return aimAngle <= Accuracy;
+//}
+//
+//void AAIEnemyController::Fire()
+//{
+//    //EnemyShipAIPawn->Fire();
+//}

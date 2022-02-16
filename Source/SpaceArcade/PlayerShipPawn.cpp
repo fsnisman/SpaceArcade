@@ -63,6 +63,26 @@ APlayerShipPawn::APlayerShipPawn()
 	AudioEffect->SetupAttachment(ProjectileSpawnPointOne);
 
 	//=========================
+	// Create Fire Effect for Engine
+	//=========================
+
+	EngineEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Engine Fire effect"));
+	EngineEffect->SetupAttachment(BodyMesh);
+
+	EngineEffect2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Engine Fire effect 2"));
+	EngineEffect2->SetupAttachment(BodyMesh);
+
+	//=========================
+	// Create Line Fly Effect for Wings
+	//=========================
+
+	LineFlyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Line Fly effect"));
+	LineFlyEffect->SetupAttachment(BodyMesh);
+
+	LineFlyEffect2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Line Fly effect 2"));
+	LineFlyEffect2->SetupAttachment(BodyMesh);
+
+	//=========================
 	// Create Camera for Ship
 	//=========================
 
@@ -74,7 +94,7 @@ void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 0.1f, true, 0.5f); //Timer for Shoot Fire
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, SecondTime, true, FrequencyTime); //Timer for Shoot Fire
 }
 
 void APlayerShipPawn::Tick(float DeltaTime)

@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include "Components/StaticMeshComponent.h"
-#include "Components/BillboardComponent.h"
+#include "Math/UnrealMathUtility.h"
+
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/BoxComponent.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -21,7 +23,10 @@ protected:
 	//=========================
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* Mesh;
+		UBoxComponent* HitCollider;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* LazerEffect;
 
 	//=========================
 	// Create Variables for ProjectTile
@@ -48,6 +53,7 @@ public:
 	void Start();
 
 protected:
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION()

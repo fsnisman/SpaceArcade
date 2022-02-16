@@ -9,7 +9,8 @@
 
 #include "DamageTaker.h"
 #include "HealthComponent.h"
-#include "ProjectTile.h"
+#include "ProjectTileEnemy.h"
+#include "PlayerShipPawn.h"
 
 #include <Components/StaticMeshComponent.h>
 #include "Components/BoxComponent.h"
@@ -17,12 +18,14 @@
 #include "Components/ArrowComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
+
 #include <Math/UnrealMathUtility.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
 
 #include "EnemyAIPawn.generated.h"
 
+class AAIEnemyController;
 class UStaticMeshComponent;
 class USpringArmComponent;
 class UHealthComponent;
@@ -50,28 +53,37 @@ protected:
 		UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* ProjectileSpawnPointOne;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* ProjectileSpawnPointTwo;
+		UArrowComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		TSubclassOf<AProjectTile> ProjectileClass;
+		TSubclassOf<AProjectTileEnemy> ProjectileClass;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UParticleSystemComponent* ShootEffectOne;
+		UParticleSystemComponent* ShootEffect;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UParticleSystemComponent* ShootEffectTwo;
+		UParticleSystemComponent* EngineEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* EngineEffect2;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* LineFlyEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* LineFlyEffect2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UParticleSystem* ExlosionEffect;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UAudioComponent* AudioEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		EProjectType Type = EProjectType::FireProjectile;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true)) // AI Patrolling Points
 		TArray<FVector> PatrollingPoints;
+
+	UPROPERTY()
+		AAIEnemyController* EnemyShipController;
 
 	//=========================
 	// Create Variables for AI Ship
@@ -80,6 +92,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRange = 1000;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		float FireFrequency = 5;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
 
@@ -87,13 +102,19 @@ protected:
 		float RotationSpeed = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Accurancy") // AI Movement Accurency
-		float MovementAccurancy = 50;
+		float MovementAccurancy = 100;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float ForwardSmootheness = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float RotationSmootheness = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Number ProjectTile")
+		int NumberProjectTile = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tracking from Player")
+		bool bTrackingPlayer = true;
 
 	FTimerHandle TimerHandle; //Timer
 
@@ -114,7 +135,21 @@ public:
 	};
 
 	UFUNCTION()
+		void Fire();
+
+	UFUNCTION()
 		bool TDamage(FDamageData DamageData);
+
+	UFUNCTION()
+		FVector GetArrowForwardVector();
+
+	UFUNCTION()
+		void RotateArrowTo(FVector TargetPosition);
+
+	UFUNCTION()
+		void TimerFire();
+
+	FVector GetEyesPosition();
 
 protected:
 	virtual void BeginPlay() override;
@@ -125,12 +160,9 @@ protected:
 	UFUNCTION()
 		void DamageTaked(float DamageValue);
 
-	UFUNCTION()
-		void Fire();
-
 public:
 
-	float FMovementComponent();
+	float FMovementComponent(float ValueAxis);
 	float FRotationComponent(float ValueAxis);
 
 	virtual void Tick(float DeltaTime) override;
@@ -140,6 +172,9 @@ public:
 	float TargetRightAxisValue = 0.f;
 	float CurrentRightAxisValue = 0.f;
 	float CurrentForwardAxisValue = 0.f;
+	float CheckNumberProjectile = 0;
+	FVector ArrowTarget;
 
+	bool CheckCollisionEnemy = true;
 	bool ReadyFire = true; //Check on Ready Shoot Fire
 };

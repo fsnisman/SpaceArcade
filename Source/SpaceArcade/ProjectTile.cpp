@@ -16,18 +16,29 @@ AProjectTile::AProjectTile()
 	RootComponent = sceeneCpm;
 
 	//=========================
-	// Create Static Mesh for ProjectTile
+	// Create HitCollider for ProjectTile
 	//=========================
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
-	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectTile::OnMeshOverlapBegin);
-	Mesh->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("HitCollider"));
+	HitCollider->SetupAttachment(RootComponent);
+	HitCollider->OnComponentBeginOverlap.AddDynamic(this, &AProjectTile::OnMeshOverlapBegin);
+	HitCollider->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+
+	//=========================
+	// Create Lazer Effect for Cannon
+	//=========================
+
+	LazerEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Lazer"));
+	LazerEffect->SetupAttachment(RootComponent);
 }
 
 void AProjectTile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FRotator nextRotation = GetActorRotation();
+	nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+	SetActorRotation(nextRotation);
 }
 
 	// Function Start for Projectile

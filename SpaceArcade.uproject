@@ -15,6 +15,12 @@
 			]
 		}
 	],
+	"Plugins": [
+		{
+			"Name": "NiagaraExtras",
+			"Enabled": true
+		}
+	],
 	"TargetPlatforms": [
 		"AllDesktop",
 		"HoloLens",

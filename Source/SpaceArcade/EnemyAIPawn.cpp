@@ -23,10 +23,8 @@ AEnemyAIPawn::AEnemyAIPawn()
 	// Create Spawn Arrow for ProjectTile
 	//=========================
 
-	ProjectileSpawnPointOne = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point One"));
-	ProjectileSpawnPointOne->SetupAttachment(BodyMesh);
-	ProjectileSpawnPointTwo = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point Two"));
-	ProjectileSpawnPointTwo->SetupAttachment(BodyMesh);
+	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point"));
+	ProjectileSpawnPoint->SetupAttachment(BodyMesh);
 
 	//=========================
 	// Create Health Component for Ship
@@ -40,31 +38,80 @@ AEnemyAIPawn::AEnemyAIPawn()
 	// Create Shoot Effect for Cannon
 	//=========================
 
-	ShootEffectOne = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect One"));
-	ShootEffectOne->SetupAttachment(ProjectileSpawnPointOne);
-	ShootEffectTwo = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect Two"));
-	ShootEffectTwo->SetupAttachment(ProjectileSpawnPointTwo);
+	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect"));
+	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
+
+	//=========================
+	// Create Fire Effect for Engine
+	//=========================
+
+	EngineEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Engine Fire effect"));
+	EngineEffect->SetupAttachment(BodyMesh);
+
+	EngineEffect2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Engine Fire effect 2"));
+	EngineEffect2->SetupAttachment(BodyMesh);
+
+	//=========================
+	// Create Line Fly Effect for Wings
+	//=========================
+
+	LineFlyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Line Fly effect"));
+	LineFlyEffect->SetupAttachment(BodyMesh);
+
+	LineFlyEffect2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Line Fly effect 2"));
+	LineFlyEffect2->SetupAttachment(BodyMesh);
+
+	//=========================
+	// Create Line Exlosion Effect
+	//=========================
+
+	ExlosionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Exlosion effect"));
 
 	//=========================
 	// Create Audio Effect for Cannon
 	//=========================
 
 	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Shoot audio effect"));
-	AudioEffect->SetupAttachment(ProjectileSpawnPointOne);
+	AudioEffect->SetupAttachment(ProjectileSpawnPoint);
 }
 
 void AEnemyAIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, 0.1f, true, 0.5f); //Timer for Shoot Fire
+	TimerFire();
+
+	EngineEffect->ActivateSystem();
+	EngineEffect2->ActivateSystem();
+	LineFlyEffect->ActivateSystem();
+	LineFlyEffect2->ActivateSystem();
 }
 
-float AEnemyAIPawn::FMovementComponent()
+
+void AEnemyAIPawn::TimerFire()
 {
-	return TargetForwardAxisValue = MoveSpeed;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, FireRange, true, FireFrequency); //Timer for Shoot Fire
 }
 
+FVector AEnemyAIPawn::GetArrowForwardVector()
+{
+	return ProjectileSpawnPoint->GetForwardVector();
+}
+
+// Function for Monement Enemy Ship
+float AEnemyAIPawn::FMovementComponent(float ValueAxis)
+{
+	if (ValueAxis == 0)
+	{
+		return TargetForwardAxisValue = ValueAxis;
+	}
+	else
+	{
+		return TargetForwardAxisValue = MoveSpeed;
+	}
+
+}
+
+// Function for Rotation Enemy Ship
 float AEnemyAIPawn::FRotationComponent(float ValueAxis)
 {
 	return TargetRightAxisValue = ValueAxis;
@@ -83,6 +130,21 @@ void AEnemyAIPawn::Tick(float DeltaTime)
 
 	SetActorLocation(MovePosition, true);
 
+	if (bTrackingPlayer)
+	{
+
+		APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+		if (PlayerShip)
+		{
+			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerShip->GetActorLocation());
+			FRotator CurreRotation = ProjectileSpawnPoint->GetComponentRotation();
+			TargetRotation.Pitch = CurreRotation.Pitch;
+			TargetRotation.Roll = CurreRotation.Roll;
+			ProjectileSpawnPoint->SetWorldRotation(FMath::RInterpConstantTo(CurreRotation, TargetRotation, DeltaTime, MovementAccurancy));
+		}
+	}
+
 	FRotator CurrentRotation = GetActorRotation();
 	float yawRotation = RotationSpeed * TargetRightAxisValue * DeltaTime;
 	yawRotation += CurrentRotation.Yaw;
@@ -92,21 +154,37 @@ void AEnemyAIPawn::Tick(float DeltaTime)
 	SetActorRotation(newRotation);
 }
 
+void AEnemyAIPawn::RotateArrowTo(FVector TargetPosition)
+{
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator currRotation = ProjectileSpawnPoint->GetComponentRotation();
+	targetRotation.Pitch = currRotation.Pitch;
+	targetRotation.Roll = currRotation.Roll;
+	ProjectileSpawnPoint->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, MovementAccurancy));
+}
+
+FVector AEnemyAIPawn::GetEyesPosition()
+{
+	return ProjectileSpawnPoint->GetComponentLocation();
+}
+
 void AEnemyAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-// Function for Health Point Ship
+// Function for Health Point Enemy Ship
 bool AEnemyAIPawn::TDamage(FDamageData DamageData)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageData.DamageValue, HealthComponent->GetHealth());
 	return HealthComponent->TDamage(DamageData);
 }
 
-// Function for Die Ship
+// Function for Die Enemy Ship
 void AEnemyAIPawn::Die()
 {
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.bNoFail = true;
 	Destroy();
@@ -118,25 +196,25 @@ void AEnemyAIPawn::DamageTaked(float DamageValue)
 	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
-// Finction for Shoot Ship
+// Finction for Shoot Enemy Ship
 void AEnemyAIPawn::Fire()
 {
-	ShootEffectOne->ActivateSystem();
-	ShootEffectTwo->ActivateSystem();
+	ShootEffect->ActivateSystem();
 	AudioEffect->Play();
 
-	if (Type == EProjectType::FireProjectile)
-	{
-		AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
-		if (projectileOne)
-		{
-			projectileOne->Start();
-		}
+	FActorSpawnParameters ParamsI;
+	ParamsI.Instigator = this;
 
-		AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
-		if (projectileTwo)
+	AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation(), ParamsI);
+	if (projectile)
+	{
+		projectile->Start();
+		CheckNumberProjectile++;
+		if (CheckNumberProjectile == NumberProjectTile)
 		{
-			projectileTwo->Start();
+			GetWorldTimerManager().ClearTimer(TimerHandle);
+			CheckNumberProjectile = 0;
+			return TimerFire();
 		}
 	}
 }
