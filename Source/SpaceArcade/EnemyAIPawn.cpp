@@ -18,6 +18,7 @@ AEnemyAIPawn::AEnemyAIPawn()
 
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
+	HitCollider->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAIPawn::OnMeshOverlapBegin);
 
 	//=========================
 	// Create Spawn Arrow for ProjectTile
@@ -78,7 +79,10 @@ AEnemyAIPawn::AEnemyAIPawn()
 void AEnemyAIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	TimerFire();
+
+	this->SetActorEnableCollision(false);
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::EnableCollision, 1, true, 2);
 
 	EngineEffect->ActivateSystem();
 	EngineEffect2->ActivateSystem();
@@ -89,6 +93,7 @@ void AEnemyAIPawn::BeginPlay()
 
 void AEnemyAIPawn::TimerFire()
 {
+	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "TimerFire");
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, FireRange, true, FireFrequency); //Timer for Shoot Fire
 }
 
@@ -163,9 +168,28 @@ void AEnemyAIPawn::RotateArrowTo(FVector TargetPosition)
 	ProjectileSpawnPoint->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, MovementAccurancy));
 }
 
+void AEnemyAIPawn::EnableCollision()
+{
+	this->SetActorEnableCollision(true);
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+	TimerFire();
+}
+
 FVector AEnemyAIPawn::GetEyesPosition()
 {
 	return ProjectileSpawnPoint->GetComponentLocation();
+}
+
+TArray<FVector> AEnemyAIPawn::GetPatrollingPoints()
+{
+	TArray<FVector> points;
+
+	for (ATargetPoint* point : PatrollingPoints)
+	{
+		points.Add(point->GetActorLocation());
+	}
+
+	return points;
 }
 
 void AEnemyAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -176,8 +200,40 @@ void AEnemyAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 // Function for Health Point Enemy Ship
 bool AEnemyAIPawn::TDamage(FDamageData DamageData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageData.DamageValue, HealthComponent->GetHealth());
 	return HealthComponent->TDamage(DamageData);
+}
+
+// Function Collision 
+void AEnemyAIPawn::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	AActor* owner = GetOwner();
+	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+
+	if (OtherActor != playerShip)
+	{
+		return;
+	}
+
+	if (OtherActor != owner && OtherActor != ownerByOwner)
+	{
+		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
+		if (damageTakerActor)
+		{
+			FDamageData damageData;
+			damageData.DamageValue = ExplosionDamage;
+			damageData.Instigator = owner;
+			damageData.DamageMaker = this;
+
+			damageTakerActor->TDamage(damageData);
+		}
+		else
+		{
+			OtherActor->Destroy();
+		}
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
+		Destroy();
+	}
 }
 
 // Function for Die Enemy Ship
@@ -205,16 +261,31 @@ void AEnemyAIPawn::Fire()
 	FActorSpawnParameters ParamsI;
 	ParamsI.Instigator = this;
 
-	AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation(), ParamsI);
-	if (projectile)
+	if (bFireToPlayer)
 	{
-		projectile->Start();
+		for (int x = 0; x < ScatterProjectTile; ++x)
+		{
+			AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation(), ParamsI);
+
+			FRotator RotatorProjectile = RotatorProjectile + FRotator(0.f, 20.f, 0.f);
+
+			projectile->SetActorRotation(FRotator(0.f, 140.f, 0.f) + RotatorProjectile);
+
+			if (projectile)
+			{
+				projectile->Start();
+			}
+		}
+
 		CheckNumberProjectile++;
-		if (CheckNumberProjectile == NumberProjectTile)
+		if (CheckNumberProjectile == CountProjectTile)
 		{
 			GetWorldTimerManager().ClearTimer(TimerHandle);
-			CheckNumberProjectile = 0;
-			return TimerFire();
 		}
 	}
+}
+
+void AEnemyAIPawn::SetPatrollingPoints(const TArray<ATargetPoint*>& NewPatrollingPoints)
+{
+	PatrollingPoints = NewPatrollingPoints;
 }

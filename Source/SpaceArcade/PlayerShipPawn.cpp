@@ -100,6 +100,14 @@ void APlayerShipPawn::BeginPlay()
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	float speedMap = 3.5;
+	
+	if (this)
+	{
+		//this->AddActorWorldOffset(FVector(speedMap, 0, 0));
+	}
+
 }
 
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

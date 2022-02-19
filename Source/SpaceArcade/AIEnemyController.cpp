@@ -10,27 +10,6 @@ void AAIEnemyController::BeginPlay()
     Initalize();
 }
 
-void AAIEnemyController::Initalize()
-{
-    EnemyShipAIPawn = Cast<AEnemyAIPawn>(GetPawn());
-
-    if (EnemyShipAIPawn)
-    {
-        PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-
-        FVector pawnLocation = EnemyShipAIPawn->GetActorLocation();
-        MovementAccurancy = EnemyShipAIPawn->GetMovementAccurancy();
-        TArray<FVector> points = EnemyShipAIPawn->GetPatrollingPoints();
-
-        for (FVector point : points)
-        {
-            PatrollingPoints.Add(point + pawnLocation);
-        }
-
-        CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
-    }
-}
-
 void AAIEnemyController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -55,8 +34,20 @@ void AAIEnemyController::Tick(float DeltaTime)
 
     float rotationValue = GetRotationgValue();
     EnemyShipAIPawn->FRotationComponent(rotationValue);
+}
 
-    
+void AAIEnemyController::Initalize()
+{
+    EnemyShipAIPawn = Cast<AEnemyAIPawn>(GetPawn());
+
+    if (EnemyShipAIPawn)
+    {
+        PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+        MovementAccurancy = EnemyShipAIPawn->GetMovementAccurancy();
+        PatrollingPoints = EnemyShipAIPawn->GetPatrollingPoints();
+    }
+
+    CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
 }
 
 
@@ -70,7 +61,6 @@ float AAIEnemyController::GetRotationgValue()
         if (CurrentPatrolPointIndex >= PatrollingPoints.Num())
         {
             EnemyShipAIPawn->Destroy();
-            Destroy();
         }
     }
 

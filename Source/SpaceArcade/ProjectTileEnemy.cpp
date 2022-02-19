@@ -22,7 +22,6 @@ AProjectTileEnemy::AProjectTileEnemy()
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("HitCollider"));
 	HitCollider->SetupAttachment(RootComponent);
 	HitCollider->OnComponentBeginOverlap.AddDynamic(this, &AProjectTileEnemy::OnMeshOverlapBegin);
-	HitCollider->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 
 	//=========================
 	// Create Lazer Effect for Cannon
@@ -52,15 +51,12 @@ void AProjectTileEnemy::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 	AActor* owner = GetOwner();
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
 
-	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
-
 	if (OtherActor == GetInstigator())
 	{
 		return;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Enemy Ship");
 
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{

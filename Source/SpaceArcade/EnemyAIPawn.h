@@ -79,8 +79,8 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UAudioComponent* AudioEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true)) // AI Patrolling Points
-		TArray<FVector> PatrollingPoints;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true))
+		TArray<ATargetPoint*> PatrollingPoints;
 
 	UPROPERTY()
 		AAIEnemyController* EnemyShipController;
@@ -94,6 +94,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireFrequency = 5;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		bool bFireToPlayer = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
@@ -110,23 +113,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float RotationSmootheness = 0.1f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Number ProjectTile")
-		int NumberProjectTile = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Count ProjectTile")
+		int CountProjectTile = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scatter ProjectTile")
+		int ScatterProjectTile = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tracking from Player")
 		bool bTrackingPlayer = true;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Explosion Damage")
+		float ExplosionDamage = 1;
 
 	FTimerHandle TimerHandle; //Timer
 
 public:
 
 	AEnemyAIPawn();
-
-	UFUNCTION()
-		TArray<FVector> GetPatrollingPoints()
-	{
-		return PatrollingPoints;
-	};
 
 	UFUNCTION()
 		float GetMovementAccurancy()
@@ -149,7 +152,15 @@ public:
 	UFUNCTION()
 		void TimerFire();
 
+	UFUNCTION()
+		void SetPatrollingPoints(const TArray <ATargetPoint*>& NewPatrollingPoints);
+
+	UFUNCTION()
+		TArray<FVector> GetPatrollingPoints();
+
+	void EnableCollision();
 	FVector GetEyesPosition();
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -159,6 +170,9 @@ protected:
 
 	UFUNCTION()
 		void DamageTaked(float DamageValue);
+
+	UFUNCTION()
+		void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult); // Collision 
 
 public:
 
