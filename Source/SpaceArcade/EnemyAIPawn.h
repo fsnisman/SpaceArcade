@@ -50,6 +50,12 @@ protected:
 		UBoxComponent* HitCollider;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UBoxComponent* HitCollider2;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UBoxComponent* HitCollider3;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -58,8 +64,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		TSubclassOf<AProjectTileEnemy> ProjectileClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectTileEnemy> ProjectileClass2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectTileEnemy> ProjectileClass3;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectTileEnemy> ProjectileClassSpecial;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* ShootEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* SpecialShootEffect;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* EngineEffect;
@@ -79,6 +97,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UAudioComponent* AudioEffect;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		USoundBase* AudioEffectDie;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true))
 		TArray<ATargetPoint*> PatrollingPoints;
 
@@ -94,6 +115,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireFrequency = 5;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		int CountFire = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		bool bFireToPlayer = true;
@@ -113,19 +137,36 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float RotationSmootheness = 0.1f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Count ProjectTile")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
+		bool bTwoProjectTile = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
+		bool bScatterProjectTile = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
 		int CountProjectTile = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scatter ProjectTile")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
 		int ScatterProjectTile = 0;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
+		bool bProjectileRotate360 = true;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tracking from Player")
-		bool bTrackingPlayer = true;
+		bool bTrackingPlayerArrow = true;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tracking from Player")
+		bool bTrackingPlayerShip = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Explosion Damage")
 		float ExplosionDamage = 1;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Explosion Damage")
+		float ExplosionDamageEnemy = 1;
+
 	FTimerHandle TimerHandle; //Timer
+
+	int Direction = 1;
 
 public:
 
@@ -139,6 +180,15 @@ public:
 
 	UFUNCTION()
 		void Fire();
+
+	UFUNCTION()
+		void FireBoss();
+
+	UFUNCTION()
+		void Fire360();
+
+	UFUNCTION()
+		void FireSpecial();
 
 	UFUNCTION()
 		bool TDamage(FDamageData DamageData);
@@ -189,6 +239,9 @@ public:
 	float CheckNumberProjectile = 0;
 	FVector ArrowTarget;
 
+	bool bStoppedMove = true;
+	bool tbRotateShip = false;
+	bool tbBackMoveShip = false;
 	bool CheckCollisionEnemy = true;
 	bool ReadyFire = true; //Check on Ready Shoot Fire
 };

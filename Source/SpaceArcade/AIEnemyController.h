@@ -34,6 +34,8 @@ protected:
 
 		int32 CurrentPatrolPointIndex = INDEX_NONE;
 
+		FTimerHandle TimerHandle;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -41,11 +43,4 @@ protected:
 
 	void Initalize();
 	float GetRotationgValue();
-
-	void Targeting();
-	bool IsPlayerSeen();
-	void RotateToPlayer();
-	bool IsPlayerInRange();
-	bool CanFire();
-	void Fire();
 };

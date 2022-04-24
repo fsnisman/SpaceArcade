@@ -94,20 +94,15 @@ void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ShootEffectOne->DeactivateSystem();
+	ShootEffectTwo->DeactivateSystem();
+
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, SecondTime, true, FrequencyTime); //Timer for Shoot Fire
 }
 
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	float speedMap = 3.5;
-	
-	if (this)
-	{
-		//this->AddActorWorldOffset(FVector(speedMap, 0, 0));
-	}
-
 }
 
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -118,6 +113,8 @@ void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// Function for Health Point Ship
 bool APlayerShipPawn::TDamage(FDamageData DamageData)
 {
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
+
 	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageData.DamageValue, HealthComponent->GetHealth());
 	return HealthComponent->TDamage(DamageData);
 }
@@ -145,16 +142,134 @@ void APlayerShipPawn::Fire()
 
 	if (Type == EProjectType::FireProjectile)
 	{
-		AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
-		if (projectileOne)
+		if (LevelShip == 1)
 		{
-			projectileOne->Start();
+			AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
+
+			if (projectileOne)
+			{
+				FRotator nextRotation = GetActorRotation();
+				nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+				projectileOne->AddActorWorldRotation(nextRotation);
+
+				projectileOne->Start();
+			}
 		}
 
-		AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
-		if (projectileTwo)
+		if (LevelShip == 2)
 		{
-			projectileTwo->Start();
+			FRotator RotatorProjectile = FRotator(0, 0, 0);
+			for (int x = 0; x < LevelShip; ++x)
+			{
+				AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
+
+				RotatorProjectile += FRotator(0.f, 4.f, 0.f);
+
+				if (x == 0)
+				{
+					projectileOne->SetActorRotation(FRotator(0.f, 0.f, 0.f) - RotatorProjectile);
+				}
+				if (x == 1)
+				{
+					projectileOne->SetActorRotation(FRotator(0.f, 0.f, 0.f) + RotatorProjectile);
+				}
+
+				if (projectileOne)
+				{
+					FRotator nextRotation = GetActorRotation();
+					nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+					projectileOne->AddActorWorldRotation(nextRotation);
+
+					projectileOne->Start();
+				}
+			}
+
+		}
+		if (LevelShip == 3)
+		{
+			FRotator RotatorProjectile = FRotator(0, 0, 0);
+			for (int x = 0; x < LevelShip; ++x)
+			{
+				AProjectTile* projectileOne = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointOne->GetComponentLocation(), ProjectileSpawnPointOne->GetComponentRotation());
+				
+				RotatorProjectile += FRotator(0.f, 10.f, 0.f);
+
+				projectileOne->SetActorRotation(FRotator(0.f, -20.f, 0.f) + RotatorProjectile);
+
+				if (projectileOne)
+				{
+					FRotator nextRotation = GetActorRotation();
+					nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+					projectileOne->AddActorWorldRotation(nextRotation);
+
+					projectileOne->Start();
+				}
+			}
+		}
+
+		if (LevelShip == 1)
+		{
+			AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
+
+			if (projectileTwo)
+			{
+				FRotator nextRotation = GetActorRotation();
+				nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+				projectileTwo->AddActorWorldRotation(nextRotation);
+
+				projectileTwo->Start();
+			}
+		}
+
+		if (LevelShip == 2)
+		{
+			FRotator RotatorProjectile = FRotator(0, 0, 0);
+			for (int x = 0; x < LevelShip; ++x)
+			{
+				AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
+
+				RotatorProjectile += FRotator(0.f, 4.f, 0.f);
+				
+				if (x == 0)
+				{
+					projectileTwo->SetActorRotation(FRotator(0.f, 0.f, 0.f) - RotatorProjectile);
+				}
+				if (x == 1)
+				{
+					projectileTwo->SetActorRotation(FRotator(0.f, 0.f, 0.f) + RotatorProjectile);
+				}
+			
+				if (projectileTwo)
+				{
+					FRotator nextRotation = GetActorRotation();
+					nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+					projectileTwo->AddActorWorldRotation(nextRotation);
+
+					projectileTwo->Start();
+				}
+			}
+
+		}
+		if (LevelShip == 3)
+		{
+			FRotator RotatorProjectile = FRotator(0, 0, 0);
+			for (int x = 0; x < LevelShip; ++x)
+			{
+				AProjectTile* projectileTwo = GetWorld()->SpawnActor<AProjectTile>(ProjectileClass, ProjectileSpawnPointTwo->GetComponentLocation(), ProjectileSpawnPointTwo->GetComponentRotation());
+
+				RotatorProjectile += FRotator(0.f, 10.f, 0.f);
+
+				projectileTwo->SetActorRotation(FRotator(0.f, -20.f, 0.f) + RotatorProjectile);
+
+				if (projectileTwo)
+				{
+					FRotator nextRotation = GetActorRotation();
+					nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
+					projectileTwo->AddActorWorldRotation(nextRotation);
+
+					projectileTwo->Start();
+				}
+			}
 		}
 	}
 }

@@ -30,6 +30,16 @@ void AAIEnemyController::Tick(float DeltaTime)
         return;
     }
 
+    if (EnemyShipAIPawn->ActorHasTag(TEXT("Boss")))
+    {
+        if (CurrentPatrolPointIndex == 1)
+        {
+            EnemyShipAIPawn->FMovementComponent(0.f);
+            return;
+        }
+    }
+
+
     EnemyShipAIPawn->FMovementComponent(1.f);
 
     float rotationValue = GetRotationgValue();
@@ -87,80 +97,3 @@ float AAIEnemyController::GetRotationgValue()
 
     return rotationValue;
 }
-
-//void AAIEnemyController::Targeting()
-//{
-//    /*if (CanFire())
-//    {
-//        Fire();
-//    }
-//    else
-//    {
-//        RotateToPlayer();
-//    }*/
-//}
-//
-//
-//void AAIEnemyController::RotateToPlayer()
-//{
-//    if (IsPlayerInRange() && PlayerPawn)
-//    {
-//        EnemyShipAIPawn->RotateArrowTo(PlayerPawn->GetActorLocation());
-//    }
-//}
-//
-//bool AAIEnemyController::IsPlayerInRange()
-//{
-//    if (PlayerPawn)
-//    {
-//        return FVector::Distance(EnemyShipAIPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
-//    }
-//    return false;
-//}
-//
-//bool AAIEnemyController::IsPlayerSeen()
-//{
-//    if (PlayerPawn)
-//    {
-//        FVector playerPos = PlayerPawn->GetActorLocation();
-//        FVector eyesPos = EnemyShipAIPawn->GetEyesPosition();
-//
-//        FHitResult hitResult;
-//        FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
-//        traceParams.bTraceComplex = true;
-//        traceParams.AddIgnoredActor(EnemyShipAIPawn);
-//        traceParams.bReturnPhysicalMaterial = false;
-//
-//        if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
-//        {
-//
-//            if (hitResult.Actor.Get())
-//            {
-//                DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
-//                return hitResult.Actor.Get() == PlayerPawn;
-//            }
-//        }
-//        DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Cyan, false, 0.5f, 0, 10);
-//        return false;
-//    }
-//    return false;
-//}
-//
-//bool AAIEnemyController::CanFire()
-//{
-//    if (!IsPlayerSeen())
-//    {
-//        return false;
-//    }
-//
-//    FVector targetingDir = EnemyShipAIPawn->GetArrowForwardVector();
-//    FVector dirToPlayer = PlayerPawn->GetActorLocation() - EnemyShipAIPawn->GetActorLocation();
-//    dirToPlayer.Normalize();
-//    float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetingDir, dirToPlayer)));
-//    return aimAngle <= Accuracy;
-//}
-//
-//void AAIEnemyController::Fire()
-//{
-//    //EnemyShipAIPawn->Fire();
-//}

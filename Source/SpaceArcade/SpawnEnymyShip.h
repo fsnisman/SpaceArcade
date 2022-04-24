@@ -31,6 +31,12 @@ protected:
 		TSubclassOf<AEnemyAIPawn> SpawnEnemyClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bRotateShipTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bBackMoveShipTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		float SpawnEnemyRate = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")

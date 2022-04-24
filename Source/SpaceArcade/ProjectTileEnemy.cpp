@@ -51,13 +51,15 @@ void AProjectTileEnemy::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 	AActor* owner = GetOwner();
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
 
+	AProjectTileEnemy* FireSpecial = this;
+
 	if (OtherActor == GetInstigator())
 	{
 		return;
 	}
-	else
-	{
 
+	if (FireSpecial->ActorHasTag(TEXT("FireSpecial")))
+	{
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
 			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
@@ -74,12 +76,30 @@ void AProjectTileEnemy::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 			{
 				OtherActor->Destroy();
 			}
-
-			Destroy();
 		}
-
 	}
+	else
+	{
+		if (OtherActor != owner && OtherActor != ownerByOwner)
+		{
+			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
+			if (damageTakerActor)
+			{
+				FDamageData damageData;
+				damageData.DamageValue = Damage;
+				damageData.Instigator = owner;
+				damageData.DamageMaker = this;
 
+				damageTakerActor->TDamage(damageData);
+
+				Destroy();
+			}
+			else
+			{
+				OtherActor->Destroy();
+			}
+		}
+	}
 }
 
 // Function Move for Projectile

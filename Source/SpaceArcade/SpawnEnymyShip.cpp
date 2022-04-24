@@ -68,6 +68,9 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 
 		AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
+		NewEnemy->tbRotateShip = bRotateShipTrigger;
+		NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
+
 		NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
 
 		UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);

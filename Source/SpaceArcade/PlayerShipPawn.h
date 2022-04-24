@@ -29,6 +29,7 @@ class USpringArmComponent;
 class UHealthComponent;
 class UCameraComponent;
 class UBoxComponent;
+class UMatineeCameraShake;
 
 
 UCLASS()
@@ -109,6 +110,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeedY = 1.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Level Ship")
+		int LevelShip = 1;
+
 	FTimerHandle TimerHandle; //Timer
 
 public:
@@ -129,6 +133,9 @@ protected:
 
 	UFUNCTION()
 		void Fire();
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UMatineeCameraShake> CamShake;
 
 public:	
 

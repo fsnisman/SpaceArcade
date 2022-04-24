@@ -20,6 +20,14 @@ AEnemyAIPawn::AEnemyAIPawn()
 	HitCollider->SetupAttachment(BodyMesh);
 	HitCollider->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAIPawn::OnMeshOverlapBegin);
 
+	HitCollider2 = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider 2"));
+	HitCollider2->SetupAttachment(BodyMesh);
+	HitCollider2->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAIPawn::OnMeshOverlapBegin);
+
+	HitCollider3 = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider 3"));
+	HitCollider3->SetupAttachment(BodyMesh);
+	HitCollider3->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAIPawn::OnMeshOverlapBegin);
+
 	//=========================
 	// Create Spawn Arrow for ProjectTile
 	//=========================
@@ -41,6 +49,10 @@ AEnemyAIPawn::AEnemyAIPawn()
 
 	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect"));
 	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
+
+	SpecialShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting special effect"));
+	SpecialShootEffect->SetupAttachment(ProjectileSpawnPoint);
+
 
 	//=========================
 	// Create Fire Effect for Engine
@@ -69,6 +81,12 @@ AEnemyAIPawn::AEnemyAIPawn()
 	ExlosionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Exlosion effect"));
 
 	//=========================
+	// Create Audio Effect for Exlosion
+	//=========================
+
+	AudioEffectDie = CreateDefaultSubobject<USoundBase>(TEXT("Audio Exlosion effect"));
+
+	//=========================
 	// Create Audio Effect for Cannon
 	//=========================
 
@@ -84,6 +102,7 @@ void AEnemyAIPawn::BeginPlay()
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::EnableCollision, 1, true, 2);
 
+	SpecialShootEffect->DeactivateSystem();
 	EngineEffect->ActivateSystem();
 	EngineEffect2->ActivateSystem();
 	LineFlyEffect->ActivateSystem();
@@ -93,7 +112,6 @@ void AEnemyAIPawn::BeginPlay()
 
 void AEnemyAIPawn::TimerFire()
 {
-	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "TimerFire");
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, FireRange, true, FireFrequency); //Timer for Shoot Fire
 }
 
@@ -131,32 +149,91 @@ void AEnemyAIPawn::Tick(float DeltaTime)
 
 	FVector CurrentLocation = GetActorLocation();
 	FVector ForwardVector = GetActorForwardVector();
-	FVector MovePosition = CurrentLocation + ForwardVector * MoveSpeed * TargetForwardAxisValue * DeltaTime;
 
-	SetActorLocation(MovePosition, true);
-
-	if (bTrackingPlayer)
+	/*AEnemyAIPawn* Boss = this;
+	if (Boss->ActorHasTag(TEXT("Boss")) && TargetForwardAxisValue == 0)
 	{
 
-		APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, FString::Printf(TEXT("Boss move")));
+		FVector NewLocation = GetActorLocation();
 
+		if (NewLocation.X > 300)
+		{
+			Direction = Direction * -1;
+		}
+
+		if (NewLocation.X < -300)
+		{
+			Direction = Direction * -1;
+		}
+
+		NewLocation.X += Direction * 0.4f;
+
+		SetActorLocation(NewLocation);
+	}*/
+
+	if(!tbBackMoveShip)
+	{
+		FVector MovePosition = CurrentLocation + ForwardVector * MoveSpeed * TargetForwardAxisValue * DeltaTime;
+		SetActorLocation(MovePosition, true);
+	}
+	else
+	{
+		FVector MovePosition = CurrentLocation + ForwardVector * -MoveSpeed * TargetForwardAxisValue * DeltaTime;
+		SetActorLocation(MovePosition, true);
+	}
+
+	if (bTrackingPlayerArrow)
+	{
+		APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		if (PlayerShip)
 		{
-			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerShip->GetActorLocation());
-			FRotator CurreRotation = ProjectileSpawnPoint->GetComponentRotation();
-			TargetRotation.Pitch = CurreRotation.Pitch;
-			TargetRotation.Roll = CurreRotation.Roll;
-			ProjectileSpawnPoint->SetWorldRotation(FMath::RInterpConstantTo(CurreRotation, TargetRotation, DeltaTime, MovementAccurancy));
+			for (UActorComponent* Comp : GetComponentsByTag(UArrowComponent::StaticClass(), TEXT("ProjectileRotate")))
+			{
+				FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerShip->GetActorLocation());
+				FRotator CurreRotation = Cast<UArrowComponent>(Comp)->GetComponentRotation();
+				TargetRotation.Pitch = CurreRotation.Pitch;
+				TargetRotation.Roll = CurreRotation.Roll;
+				Cast<UArrowComponent>(Comp)->SetWorldRotation(FMath::RInterpConstantTo(CurreRotation, TargetRotation, DeltaTime, MovementAccurancy));
+			}
 		}
 	}
 
-	FRotator CurrentRotation = GetActorRotation();
-	float yawRotation = RotationSpeed * TargetRightAxisValue * DeltaTime;
-	yawRotation += CurrentRotation.Yaw;
+	if (bProjectileRotate360)
+	{
+		APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		if (PlayerShip)
+		{
+			for (UActorComponent* Comp : GetComponentsByTag(UArrowComponent::StaticClass(), TEXT("ProjectileRotate360")))
+			{
+				Cast<UArrowComponent>(Comp)->AddRelativeRotation(FRotator(0,1,0));
+			}
+		}
+	}
 
-	FRotator newRotation = FRotator(0.f, yawRotation, 0.f);
+	if (bTrackingPlayerShip)
+	{
+		APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		if (PlayerShip)
+		{
+			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerShip->GetActorLocation());
+			FRotator CurreRotation = BodyMesh->GetRelativeRotation();
+			TargetRotation.Pitch = CurreRotation.Pitch;
+			TargetRotation.Roll = CurreRotation.Roll;
+			BodyMesh->SetWorldRotation(FMath::RInterpConstantTo(CurreRotation, TargetRotation, DeltaTime, MovementAccurancy));
+		}
+	}
 
-	SetActorRotation(newRotation);
+	if (tbRotateShip)
+	{
+		FRotator CurrentRotation = GetActorRotation();
+		float yawRotation = RotationSpeed * TargetRightAxisValue * DeltaTime;
+		yawRotation += CurrentRotation.Yaw;
+
+		FRotator newRotation = FRotator(0.f, yawRotation, 0.f);
+
+		SetActorRotation(newRotation);
+	}
 }
 
 void AEnemyAIPawn::RotateArrowTo(FVector TargetPosition)
@@ -226,20 +303,25 @@ void AEnemyAIPawn::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			damageData.DamageMaker = this;
 
 			damageTakerActor->TDamage(damageData);
+			damageData.DamageValue = ExplosionDamageEnemy;
+			TDamage(damageData);
 		}
 		else
 		{
-			OtherActor->Destroy();
+			if (HealthComponent->CurrentHealth == 0)
+			{
+				Die();
+			}
 		}
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
-		Destroy();
 	}
 }
+
 
 // Function for Die Enemy Ship
 void AEnemyAIPawn::Die()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.bNoFail = true;
@@ -263,13 +345,168 @@ void AEnemyAIPawn::Fire()
 
 	if (bFireToPlayer)
 	{
-		for (int x = 0; x < ScatterProjectTile; ++x)
+		if (bScatterProjectTile)
 		{
-			AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation(), ParamsI);
+			FRotator RotatorProjectile;
+			for (int x = 0; x < ScatterProjectTile; ++x)
+			{
+				AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation(), ParamsI);
 
-			FRotator RotatorProjectile = RotatorProjectile + FRotator(0.f, 20.f, 0.f);
+				RotatorProjectile = RotatorProjectile + FRotator(0.f, 20.f, 0.f);
 
-			projectile->SetActorRotation(FRotator(0.f, 140.f, 0.f) + RotatorProjectile);
+				projectile->SetActorRotation(FRotator(0.f, 140.f, 0.f) + RotatorProjectile);
+
+				if (projectile)
+				{
+					projectile->Start();
+				}
+			}
+
+			CheckNumberProjectile++;
+			if (CheckNumberProjectile == CountProjectTile)
+			{
+				GetWorldTimerManager().ClearTimer(TimerHandle);
+			}
+		}
+		else
+		{
+			CheckNumberProjectile++;
+			if (CheckNumberProjectile == CountProjectTile)
+			{
+				AEnemyAIPawn* Boss = this;
+
+				if(Boss->ActorHasTag(TEXT("Boss")))
+				{
+					int Fire = 0;
+					CheckNumberProjectile = 0;
+
+					Fire = FMath::RandRange(0, 2);
+
+					if (Fire == 0)
+					{
+						GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, FString::Printf(TEXT("Shoot")));
+						GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::FireBoss, FireRange, true, FireFrequency);
+					}
+					
+					if (Fire == 1)
+					{
+						GEngine->AddOnScreenDebugMessage(6, 3, FColor::Red, FString::Printf(TEXT("Shoot360")));
+						GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire360, FireRange, true, 3);
+					}
+
+					if (Fire == 2)
+					{
+						GEngine->AddOnScreenDebugMessage(7, 4, FColor::Red, FString::Printf(TEXT("ShootSpecial")));
+						GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::FireSpecial, 1, true, 10);
+						SpecialShootEffect->ActivateSystem();
+					}
+				}
+				else
+				{
+					for (UActorComponent* Comp : GetComponentsByTag(UArrowComponent::StaticClass(), TEXT("ProjectileSpawnPoint")))
+					{
+						AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, Cast<UArrowComponent>(Comp)->GetComponentLocation(), Cast<UArrowComponent>(Comp)->GetComponentRotation(), ParamsI);
+
+						if (projectile)
+						{
+							projectile->Start();
+						}
+					}
+
+					GetWorldTimerManager().ClearTimer(TimerHandle);
+				}
+			}
+		}
+	}
+}
+
+void AEnemyAIPawn::FireSpecial()
+{
+	SpecialShootEffect->DeactivateSystem();
+	AudioEffect->Play();
+
+	FActorSpawnParameters ParamsI;
+	ParamsI.Instigator = this;
+
+	APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	if (bFireToPlayer)
+	{
+		for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("ProjectileSpawnPointSpecial")))
+		{
+			AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClassSpecial, Cast<UArrowComponent>(Comp)->GetComponentLocation(), Cast<UArrowComponent>(Comp)->GetComponentRotation(), ParamsI);
+
+			if (projectile)
+			{
+				const FAttachmentTransformRules AttachActor(EAttachmentRule::KeepWorld, true);
+
+				projectile->AttachToActor(this, AttachActor, NAME_None);
+				projectile->Start();
+			}
+		}
+
+		CountProjectTile = 1;
+
+		CheckNumberProjectile++;
+		if (CheckNumberProjectile == CountProjectTile)
+		{
+			CheckNumberProjectile = 0;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, 1, true, 1);
+		}
+		
+	}
+}
+
+void AEnemyAIPawn::Fire360()
+{
+	ShootEffect->ActivateSystem();
+	AudioEffect->Play();
+
+	FActorSpawnParameters ParamsI;
+	ParamsI.Instigator = this;
+
+	APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	if (bFireToPlayer)
+	{
+		for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("ProjectileSpawnPoint360")))
+		{
+			AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass2, Cast<UArrowComponent>(Comp)->GetComponentLocation(), Cast<UArrowComponent>(Comp)->GetComponentRotation(), ParamsI);
+
+			if (projectile)
+			{
+				const FAttachmentTransformRules AttachActor(EAttachmentRule::KeepWorld, true);
+
+				projectile->AttachToActor(this, AttachActor, NAME_None);
+				projectile->Start();
+			}
+		}
+
+		CheckNumberProjectile++;
+		if (CheckNumberProjectile == 30)
+		{
+			CheckNumberProjectile = 0;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, 1, true, 1);
+		}
+
+	}
+}
+
+void AEnemyAIPawn::FireBoss()
+{
+	ShootEffect->ActivateSystem();
+	AudioEffect->Play();
+
+	FActorSpawnParameters ParamsI;
+	ParamsI.Instigator = this;
+
+	APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	if (bFireToPlayer)
+	{
+		for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("ProjectileSpawnPoint")))
+		{
+			AProjectTileEnemy* projectile = GetWorld()->SpawnActor<AProjectTileEnemy>(ProjectileClass, Cast<UArrowComponent>(Comp)->GetComponentLocation(), Cast<UArrowComponent>(Comp)->GetComponentRotation(), ParamsI);
 
 			if (projectile)
 			{
@@ -278,10 +515,12 @@ void AEnemyAIPawn::Fire()
 		}
 
 		CheckNumberProjectile++;
-		if (CheckNumberProjectile == CountProjectTile)
+		if (CheckNumberProjectile == 10)
 		{
-			GetWorldTimerManager().ClearTimer(TimerHandle);
+			CheckNumberProjectile = 0;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::Fire, 1, true, 1);
 		}
+
 	}
 }
 

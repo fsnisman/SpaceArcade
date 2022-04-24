@@ -4,6 +4,7 @@
 
 #include "Math/UnrealMathUtility.h"
 
+#include "Components/AudioComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -27,6 +28,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* LazerEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects Punch")
+		USoundBase* AudioEffectPunch;
 
 	//=========================
 	// Create Variables for ProjectTile

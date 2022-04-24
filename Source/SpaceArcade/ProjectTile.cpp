@@ -29,15 +29,17 @@ AProjectTile::AProjectTile()
 
 	LazerEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Lazer"));
 	LazerEffect->SetupAttachment(RootComponent);
+
+	//=========================
+	// Create Audio Effect for Punch
+	//=========================
+
+	AudioEffectPunch = CreateDefaultSubobject<USoundBase>(TEXT("Audio Punch effect"));
 }
 
 void AProjectTile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FRotator nextRotation = GetActorRotation();
-	nextRotation.Yaw = nextRotation.Yaw + FMath::RandRange(-1, 1);
-	SetActorRotation(nextRotation);
 }
 
 	// Function Start for Projectile
@@ -60,6 +62,7 @@ void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	}
 	else
 	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectPunch, GetActorLocation());
 
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
