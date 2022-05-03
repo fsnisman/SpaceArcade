@@ -104,6 +104,10 @@ void APlayerShipPawn::BeginPlay()
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	ABalancePlayerState* playerState = Cast<ABalancePlayerState>(this->GetPlayerState());
+
+	LevelShip = playerState->LevelShip;
 }
 
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

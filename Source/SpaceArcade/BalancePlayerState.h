@@ -22,5 +22,5 @@ public:
 		int Sharp = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
-		int LevelShip = 0;
+		int LevelShip = 1;
 };

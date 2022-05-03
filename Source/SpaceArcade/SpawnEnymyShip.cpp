@@ -112,7 +112,17 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 			NewEnemy->FRotationSmootheness = tfRotationSmootheness;
 			NewEnemy->FfTimerFire = tffTimerFire;
 			NewEnemy->iCountProjectTile = tCountProjectTile;
-			NewEnemy->dDropItem = tDropItem;
+
+			if (SpawnSpecialEnemy && NumberCount == CountEnemy)
+			{
+				tDropItem = tDropItemSpecial;
+				NewEnemy->dDropItem = tDropItem;
+				NewEnemy->tbSetMaterial = true;
+			}
+			else
+			{
+				NewEnemy->dDropItem = tDropItem;
+			}
 
 			NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
 

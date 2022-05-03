@@ -8,6 +8,7 @@
 #include "DamageTaker.h"
 #include "HealthComponent.h"
 #include "ProjectTile.h"
+#include "BalancePlayerState.h"
 
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>

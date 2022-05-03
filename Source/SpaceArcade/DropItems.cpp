@@ -75,6 +75,15 @@ void ADropItems::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 		if (this->ActorHasTag(TEXT("LevelUP")))
 		{
 			GEngine->AddOnScreenDebugMessage(9, 3, FColor::Cyan, FString::Printf(TEXT("Level Up Overlaping")));
+			if (playerState->LevelShip < 3)
+			{
+				playerState->LevelShip += DropCountLevelUP;
+			}
+			else
+			{
+				playerState->Coin = DropCountCoin;
+			}
+
 			Destroy();
 		}
 

@@ -87,11 +87,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Boss")
 		bool SpawnBoss = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Boss")
+		bool SpawnSpecialEnemy = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Movement")
 		FVector SpeedMovement;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop")
 		TSubclassOf<ADropItems> tDropItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop")
+		TSubclassOf<ADropItems> tDropItemSpecial;
 
 public:	
 	

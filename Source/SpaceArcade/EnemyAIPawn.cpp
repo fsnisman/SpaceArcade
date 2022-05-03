@@ -12,6 +12,9 @@ AEnemyAIPawn::AEnemyAIPawn()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship body"));
 	RootComponent = BodyMesh;
 
+	MaterialOne = CreateDefaultSubobject<UMaterialInterface>("MaterialOne");
+	MaterialTwo = CreateDefaultSubobject<UMaterialInterface>("MaterialTwo");
+
 	//=========================
 	// Create Hit Colloder for Ship
 	//=========================
@@ -125,6 +128,11 @@ void AEnemyAIPawn::BeginPlay()
 	ForwardSmootheness = FForwardSmootheness;
 	RotationSmootheness = FRotationSmootheness;
 	CountProjectTile = iCountProjectTile;
+
+	if (tbSetMaterial)
+	{
+		BodyMesh->SetMaterial(0, MaterialTwo);
+	}
 
 	SpecialShootEffect->DeactivateSystem();
 	ExlosionEffectDie->DeactivateSystem();
@@ -337,10 +345,12 @@ void AEnemyAIPawn::Die()
 {
 	AEnemyAIPawn* Boss = this;
 	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	ABalancePlayerState* playerState = Cast<ABalancePlayerState>(playerShip->GetPlayerState());
 
 	if (!Boss->ActorHasTag(TEXT("Boss")))
 	{
 		playerShip->CountDiedEnemyPawn++;
+		playerState->iScore += ScoreDeath;
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
 		ADropItems* Drop = GetWorld()->SpawnActor<ADropItems>(DropItem, GetActorLocation(), GetActorRotation());
 
@@ -355,7 +365,8 @@ void AEnemyAIPawn::Die()
 	else
 	{
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
-		
+		playerState->iScore += ScoreDeath;
+
 		ExlosionEffectDie->ActivateSystem();
 		
 		for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("Fire")))

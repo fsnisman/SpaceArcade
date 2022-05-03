@@ -47,6 +47,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* BodyMesh;
 
+	UPROPERTY(EditAnywhere, Category = "Materials")
+		UMaterialInterface* MaterialOne;
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+		UMaterialInterface* MaterialTwo;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
 
@@ -283,6 +289,7 @@ public:
 
 	FVector ArrowTarget;
 
+	bool tbSetMaterial = false;
 	bool tbRotateArrow = false;
 	bool tbStoppedMove = true;
 	bool tbRotateShip = false;
