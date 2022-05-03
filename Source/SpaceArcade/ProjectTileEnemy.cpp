@@ -105,8 +105,6 @@ void AProjectTileEnemy::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 // Function Move for Projectile
 void AProjectTileEnemy::Move()
 {
-
-
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed * MoveRate;
 	SetActorLocation(nextPosition);
 }

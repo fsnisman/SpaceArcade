@@ -60,24 +60,69 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 {
 	FTimerHandle TargetingTimerHandle;
 
-	if (NumberCount < CountEnemy)
+	if (this->ActorHasTag((TEXT("SpawnBoss"))))
 	{
-		FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
-		
-		NumberCount++;
+		if (SpawnBoss == true)
+		{
+			FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
+			AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			NewEnemy->tbRotateShip = bRotateShipTrigger;
+			NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
+			NewEnemy->tbStoppedMove = bStopMoveTrigger;
+			NewEnemy->tbRotateArrow = bRotateArrowTrigger;
+			NewEnemy->tbRotateShipToPlayer = bRotateShipToPlayerTrigger;
+			NewEnemy->ValueTimerStopMove = fValueTimerStopMove;
+			NewEnemy->fMoveSpeed = tfMoveSpeed;
+			NewEnemy->FRotationSpeed = tfRotationSpeed;
+			NewEnemy->FMovementAccurancy = tfMovementAccurancy;
+			NewEnemy->FForwardSmootheness = tfForwardSmootheness;
+			NewEnemy->FRotationSmootheness = tfRotationSmootheness;
+			NewEnemy->FfTimerFire = tffTimerFire;
+			NewEnemy->iCountProjectTile = tCountProjectTile;
+			NewEnemy->dDropItem = tDropItem;
 
-		NewEnemy->tbRotateShip = bRotateShipTrigger;
-		NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
+			NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
 
-		NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
+			UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);
 
-		UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);
+			SpawnBoss = false;
+		}
 	}
 	else
 	{
-		GetWorld()->GetTimerManager().ClearTimer(TargetingTimerHandle);
+		if (NumberCount < CountEnemy)
+		{
+			FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
+
+			NumberCount++;
+
+			AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+			NewEnemy->tbRotateShip = bRotateShipTrigger;
+			NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
+			NewEnemy->tbStoppedMove = bStopMoveTrigger;
+			NewEnemy->tbRotateArrow = bRotateArrowTrigger;
+			NewEnemy->tbRotateShipToPlayer = bRotateShipToPlayerTrigger;
+			NewEnemy->ValueTimerStopMove = fValueTimerStopMove;
+			NewEnemy->fMoveSpeed = tfMoveSpeed;
+			NewEnemy->FRotationSpeed = tfRotationSpeed;
+			NewEnemy->FMovementAccurancy = tfMovementAccurancy;
+			NewEnemy->FForwardSmootheness = tfForwardSmootheness;
+			NewEnemy->FRotationSmootheness = tfRotationSmootheness;
+			NewEnemy->FfTimerFire = tffTimerFire;
+			NewEnemy->iCountProjectTile = tCountProjectTile;
+			NewEnemy->dDropItem = tDropItem;
+
+			NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
+
+			UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);
+		}
+		else
+		{
+			Destroy();
+			GetWorld()->GetTimerManager().ClearTimer(TargetingTimerHandle);
+		}
 	}
 }
 

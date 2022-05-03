@@ -11,6 +11,7 @@
 #include "HealthComponent.h"
 #include "ProjectTileEnemy.h"
 #include "PlayerShipPawn.h"
+#include "DropItems.h"
 
 #include <Components/StaticMeshComponent.h>
 #include "Components/BoxComponent.h"
@@ -91,6 +92,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* LineFlyEffect2;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* ExlosionEffectDie;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* FireExlosionEffectDie;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		UParticleSystem* ExlosionEffect;
 
@@ -105,6 +112,9 @@ protected:
 
 	UPROPERTY()
 		AAIEnemyController* EnemyShipController;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop")
+		TSubclassOf<ADropItems> DropItem;
 
 	//=========================
 	// Create Variables for AI Ship
@@ -137,6 +147,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float RotationSmootheness = 0.1f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timer Fire")
+		float fTimerFire = 1;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Setting ProjectTile")
 		bool bTwoProjectTile = 0;
 
@@ -163,6 +176,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Explosion Damage")
 		float ExplosionDamageEnemy = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
+		float ScoreDeath = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop | Drop Count")
+		float DropCoin = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop | Drop Count")
+		float DropLevelUP = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop | Drop Count")
+		float DropSharp = 0;
 
 	FTimerHandle TimerHandle; //Timer
 
@@ -203,10 +228,16 @@ public:
 		void TimerFire();
 
 	UFUNCTION()
+		void StopMove();
+
+	UFUNCTION()
 		void SetPatrollingPoints(const TArray <ATargetPoint*>& NewPatrollingPoints);
 
 	UFUNCTION()
 		TArray<FVector> GetPatrollingPoints();
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UMatineeCameraShake> CamShake;
 
 	void EnableCollision();
 	FVector GetEyesPosition();
@@ -226,6 +257,8 @@ protected:
 
 public:
 
+	TSubclassOf<ADropItems> dDropItem;
+
 	float FMovementComponent(float ValueAxis);
 	float FRotationComponent(float ValueAxis);
 
@@ -237,10 +270,23 @@ public:
 	float CurrentRightAxisValue = 0.f;
 	float CurrentForwardAxisValue = 0.f;
 	float CheckNumberProjectile = 0;
+	
+	float ValueTimerStopMove = 0;
+	float fMoveSpeed = 0;
+	float FRotationSpeed = 0;
+	float FMovementAccurancy = 0;
+	float FForwardSmootheness = 0;
+	float FRotationSmootheness = 0;
+	float FfTimerFire = 0;
+
+	int iCountProjectTile = 0;
+
 	FVector ArrowTarget;
 
-	bool bStoppedMove = true;
+	bool tbRotateArrow = false;
+	bool tbStoppedMove = true;
 	bool tbRotateShip = false;
+	bool tbRotateShipToPlayer = false;
 	bool tbBackMoveShip = false;
 	bool CheckCollisionEnemy = true;
 	bool ReadyFire = true; //Check on Ready Shoot Fire

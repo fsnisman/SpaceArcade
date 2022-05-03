@@ -31,6 +31,12 @@ AProjectTile::AProjectTile()
 	LazerEffect->SetupAttachment(RootComponent);
 
 	//=========================
+	// Create Collision Effect for Cannon
+	//=========================
+
+	CollisionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Collision Effect"));
+
+	//=========================
 	// Create Audio Effect for Punch
 	//=========================
 
@@ -81,6 +87,7 @@ void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 				OtherActor->Destroy();
 			}
 
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollisionEffect, GetActorTransform());
 			Destroy();
 		}
 

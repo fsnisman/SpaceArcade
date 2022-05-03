@@ -34,10 +34,46 @@ protected:
 		bool bRotateShipTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bRotateShipToPlayerTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bRotateArrowTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bBackMoveShipTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bStopMoveTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		bool bMoveRightLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
+		float fValueTimerStopMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		float SpawnEnemyRate = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
+		float tfMoveSpeed = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
+		float tfRotationSpeed = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
+		float tfMovementAccurancy = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
+		float tfForwardSmootheness = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
+		float tfRotationSmootheness = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Timer")
+		float tffTimerFire = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Count ProjectTile")
+		int tCountProjectTile = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		TArray<ATargetPoint*> EnemyTrackingPoints;
@@ -45,8 +81,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Count Enemy")
 		float CountEnemy = 5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Died Enemy")
+		float DiedEnemy = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Boss")
+		bool SpawnBoss = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Movement")
 		FVector SpeedMovement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop")
+		TSubclassOf<ADropItems> tDropItem;
 
 public:	
 	

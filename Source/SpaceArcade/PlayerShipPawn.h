@@ -122,6 +122,12 @@ public:
 	UFUNCTION()
 		bool TDamage(FDamageData DamageData);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Count Died Enemy")
+		float CountDiedEnemyPawn = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LevelComplited")
+		bool LevelComplitet = false;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -136,6 +142,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UMatineeCameraShake> CamShake;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UMatineeCameraShake> CamShakeStart;
 
 public:	
 

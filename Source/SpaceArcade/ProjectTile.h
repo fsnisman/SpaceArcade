@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects Punch")
 		USoundBase* AudioEffectPunch;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Punch Partical")
+		UParticleSystem* CollisionEffect;
+
 	//=========================
 	// Create Variables for ProjectTile
 	//=========================

@@ -2,7 +2,6 @@
 #include "AIEnemyController.h"
 #include "EnemyAIPawn.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "DrawDebugHelpers.h"
 
 void AAIEnemyController::BeginPlay()
 {
@@ -30,6 +29,15 @@ void AAIEnemyController::Tick(float DeltaTime)
         return;
     }
 
+    if (EnemyShipAIPawn->tbStoppedMove)
+    {
+        if (CurrentPatrolPointIndex == 1)
+        {
+            EnemyShipAIPawn->StopMove();
+            return;
+        }
+    }
+
     if (EnemyShipAIPawn->ActorHasTag(TEXT("Boss")))
     {
         if (CurrentPatrolPointIndex == 1)
@@ -38,7 +46,6 @@ void AAIEnemyController::Tick(float DeltaTime)
             return;
         }
     }
-
 
     EnemyShipAIPawn->FMovementComponent(1.f);
 
@@ -63,6 +70,7 @@ void AAIEnemyController::Initalize()
 
 float AAIEnemyController::GetRotationgValue()
 {
+    APlayerShipPawn* PlayerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
     FVector currentPoint = PatrollingPoints[CurrentPatrolPointIndex];
     FVector pawnLocation = EnemyShipAIPawn->GetActorLocation();
     if (FVector::Distance(currentPoint, pawnLocation) <= MovementAccurancy)
@@ -70,7 +78,14 @@ float AAIEnemyController::GetRotationgValue()
         CurrentPatrolPointIndex++;
         if (CurrentPatrolPointIndex >= PatrollingPoints.Num())
         {
-            EnemyShipAIPawn->Destroy();
+            if (!EnemyShipAIPawn->ActorHasTag(TEXT("Boss")))
+            {
+                if (PlayerShip)
+                {
+                    PlayerShip->CountDiedEnemyPawn++;
+                }
+                EnemyShipAIPawn->Destroy();
+            }
         }
     }
 
@@ -78,8 +93,6 @@ float AAIEnemyController::GetRotationgValue()
     moveDirection.Normalize();
     FVector forwardDirection = EnemyShipAIPawn->GetActorForwardVector();
     FVector rightDirection = EnemyShipAIPawn->GetActorRightVector();
-
-    DrawDebugLine(GetWorld(), pawnLocation, currentPoint, FColor::Green, false, 0.1f, 0, 5);
 
     float forwardAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(forwardDirection, moveDirection)));
     float rightAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(rightDirection, moveDirection)));
