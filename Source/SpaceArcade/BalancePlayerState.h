@@ -12,12 +12,15 @@ class SPACEARCADE_API ABalancePlayerState : public APlayerState
 
 public:
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
-		int Score = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
+		int iScore = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
 		int Coin = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
 		int Sharp = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
+		int LevelShip = 0;
 };
