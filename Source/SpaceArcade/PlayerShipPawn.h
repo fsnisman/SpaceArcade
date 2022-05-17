@@ -65,8 +65,14 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UArrowComponent* ProjectileSpawnPointTwo;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* ProjectileSpawnPointSpecial;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		TSubclassOf<AProjectTile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjectTile> ProjectileClassSpecial;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* EngineEffect;
@@ -89,8 +95,20 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UAudioComponent* AudioEffect;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectSpecial;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		EProjectType Type = EProjectType::FireProjectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		USoundBase* AudioEffectDie;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UParticleSystem* ExlosionEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectPunch;
 
 	//=========================
 	// Create Variables for Ship
@@ -105,6 +123,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FrequencyTime = 1.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		float FireTimer = 0;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeedX = 1.f;
 
@@ -113,6 +134,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Level Ship")
 		int LevelShip = 1;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		bool DiedShip = false;
 
 	FTimerHandle TimerHandle; //Timer
 
@@ -128,6 +153,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LevelComplited")
 		bool LevelComplitet = false;
+
+	UFUNCTION()
+		float GetCurretHealth();
+
+	UFUNCTION()
+		float GetMaxHealth();
+
+	UFUNCTION()
+		void FireSpecial();
 
 protected:
 	virtual void BeginPlay() override;
@@ -149,8 +183,13 @@ protected:
 
 public:	
 
+	UFUNCTION()
+		void OnRedyOfFire();
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool ReadyFire = true; //Check on Ready Shoot Fire
+	bool TriggerVingget = false;
+	bool SpawnTextFightBoss = false;
 };

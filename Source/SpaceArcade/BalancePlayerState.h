@@ -13,6 +13,9 @@ class SPACEARCADE_API ABalancePlayerState : public APlayerState
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
+		int EnemyCount = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
 		int iScore = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
@@ -22,5 +25,11 @@ public:
 		int Sharp = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
+		int PlayerHP = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
 		int LevelShip = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Balance")
+		float ScoreCount = 0;
 };

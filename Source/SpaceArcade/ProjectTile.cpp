@@ -87,8 +87,11 @@ void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 				OtherActor->Destroy();
 			}
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollisionEffect, GetActorTransform());
-			Destroy();
+			if (!ActorHasTag(TEXT("SpecailCannon")))
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollisionEffect, GetActorTransform());
+				Destroy();
+			}
 		}
 
 	}

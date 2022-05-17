@@ -1,5 +1,6 @@
 
 #include "EnemyAIPawn.h"
+#include "WidgetEnemyHP.h"
 
 AEnemyAIPawn::AEnemyAIPawn()
 {
@@ -14,6 +15,7 @@ AEnemyAIPawn::AEnemyAIPawn()
 
 	MaterialOne = CreateDefaultSubobject<UMaterialInterface>("MaterialOne");
 	MaterialTwo = CreateDefaultSubobject<UMaterialInterface>("MaterialTwo");
+	MaterialThree = CreateDefaultSubobject<UMaterialInterface>("MaterialThree");
 
 	//=========================
 	// Create Hit Colloder for Ship
@@ -109,6 +111,19 @@ AEnemyAIPawn::AEnemyAIPawn()
 
 	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Shoot audio effect"));
 	AudioEffect->SetupAttachment(ProjectileSpawnPoint);
+
+	//=========================
+	// Create Audio Effect for Ship
+	//=========================
+
+	AudioEffectPunch = CreateDefaultSubobject<UAudioComponent>(TEXT("Punch audio effect"));
+	AudioEffectPunch->SetupAttachment(BodyMesh);
+
+	//=========================
+	// Create Widget for Ship
+	//=========================
+	BarHP = CreateDefaultSubobject<UWidgetComponent>("BarHP");
+	BarHP->SetupAttachment(BodyMesh);
 }
 
 void AEnemyAIPawn::BeginPlay()
@@ -116,6 +131,12 @@ void AEnemyAIPawn::BeginPlay()
 	Super::BeginPlay();
 
 	this->SetActorEnableCollision(false);
+
+	if (this)
+	{
+		UWidgetEnemyHP* HealthBar = Cast<UWidgetEnemyHP>(BarHP->GetUserWidgetObject());
+		HealthBar->SetOwner(this);
+	}
 
 	fTimerFire = FfTimerFire;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyAIPawn::EnableCollision, 1, true, fTimerFire);
@@ -268,6 +289,16 @@ void AEnemyAIPawn::RotateArrowTo(FVector TargetPosition)
 	ProjectileSpawnPoint->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, MovementAccurancy));
 }
 
+float AEnemyAIPawn::GetCurretHealth()
+{
+	return HealthComponent->GetHealth();
+}
+
+float AEnemyAIPawn::GetMaxHealth()
+{
+	return HealthComponent->GetHealthMax();
+}
+
 void AEnemyAIPawn::EnableCollision()
 {
 	this->SetActorEnableCollision(true);
@@ -300,6 +331,7 @@ void AEnemyAIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 // Function for Health Point Enemy Ship
 bool AEnemyAIPawn::TDamage(FDamageData DamageData)
 {
+	AudioEffectPunch->Play();
 	return HealthComponent->TDamage(DamageData);
 }
 
@@ -345,36 +377,45 @@ void AEnemyAIPawn::Die()
 {
 	AEnemyAIPawn* Boss = this;
 	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	ABalancePlayerState* playerState = Cast<ABalancePlayerState>(playerShip->GetPlayerState());
-
-	if (!Boss->ActorHasTag(TEXT("Boss")))
+	
+	if (playerShip)
 	{
-		playerShip->CountDiedEnemyPawn++;
-		playerState->iScore += ScoreDeath;
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
-		ADropItems* Drop = GetWorld()->SpawnActor<ADropItems>(DropItem, GetActorLocation(), GetActorRotation());
+		ABalancePlayerState* playerState = Cast<ABalancePlayerState>(playerShip->GetPlayerState());
 
-
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.bNoFail = true;
-		Destroy();
-	}
-	else
-	{
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
-		playerState->iScore += ScoreDeath;
-
-		ExlosionEffectDie->ActivateSystem();
-		
-		for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("Fire")))
+		if (!Boss->ActorHasTag(TEXT("Boss")))
 		{
-			Cast<UParticleSystemComponent>(Comp)->ActivateSystem();
+			playerShip->CountDiedEnemyPawn++;
+
+
+			playerState->iScore += FMath::RandRange(ScoreDeathMin, ScoreDeathMax);
+			playerState->EnemyCount++;
+			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
+			ADropItems* Drop = GetWorld()->SpawnActor<ADropItems>(DropItem, GetActorLocation(), GetActorRotation());
+
+
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExlosionEffect, GetActorTransform());
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
+
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.bNoFail = true;
+			Destroy();
 		}
-		playerShip->LevelComplitet = true;
-		GetWorldTimerManager().ClearTimer(TimerHandle);
+		else
+		{
+			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShake, 1.0f);
+
+			playerState->iScore += FMath::RandRange(ScoreDeathMin, ScoreDeathMax);
+			playerState->EnemyCount++;
+
+			ExlosionEffectDie->ActivateSystem();
+
+			for (UActorComponent* Comp : GetComponentsByTag(UActorComponent::StaticClass(), TEXT("Fire")))
+			{
+				Cast<UParticleSystemComponent>(Comp)->ActivateSystem();
+			}
+			playerShip->LevelComplitet = true;
+			GetWorldTimerManager().ClearTimer(TimerHandle);
+		}
 	}
 }
 
@@ -388,7 +429,6 @@ void AEnemyAIPawn::DamageTaked(float DamageValue)
 void AEnemyAIPawn::Fire()
 {
 	ShootEffect->ActivateSystem();
-	AudioEffect->Play();
 
 	AEnemyAIPawn* Boss = this;
 	FActorSpawnParameters ParamsI;
@@ -404,6 +444,7 @@ void AEnemyAIPawn::Fire()
 
 				if (projectile)
 				{
+					AudioEffect->Play();
 					projectile->Start();
 				}
 			}
@@ -450,6 +491,7 @@ void AEnemyAIPawn::Fire()
 
 					if (projectile)
 					{
+						AudioEffect->Play();
 						projectile->Start();
 					}
 				}
@@ -467,7 +509,6 @@ void AEnemyAIPawn::Fire()
 void AEnemyAIPawn::FireSpecial()
 {
 	SpecialShootEffect->DeactivateSystem();
-	AudioEffect->Play();
 
 	FActorSpawnParameters ParamsI;
 	ParamsI.Instigator = this;
@@ -484,6 +525,7 @@ void AEnemyAIPawn::FireSpecial()
 			{
 				const FAttachmentTransformRules AttachActor(EAttachmentRule::KeepWorld, true);
 
+				AudioEffect->Play();
 				projectile->AttachToActor(this, AttachActor, NAME_None);
 				projectile->Start();
 			}
@@ -504,7 +546,6 @@ void AEnemyAIPawn::FireSpecial()
 void AEnemyAIPawn::Fire360()
 {
 	ShootEffect->ActivateSystem();
-	AudioEffect->Play();
 
 	FActorSpawnParameters ParamsI;
 	ParamsI.Instigator = this;
@@ -521,6 +562,7 @@ void AEnemyAIPawn::Fire360()
 			{
 				const FAttachmentTransformRules AttachActor(EAttachmentRule::KeepWorld, true);
 
+				AudioEffect->Play();
 				projectile->AttachToActor(this, AttachActor, NAME_None);
 				projectile->Start();
 			}
@@ -539,7 +581,6 @@ void AEnemyAIPawn::Fire360()
 void AEnemyAIPawn::FireBoss()
 {
 	ShootEffect->ActivateSystem();
-	AudioEffect->Play();
 
 	FActorSpawnParameters ParamsI;
 	ParamsI.Instigator = this;
@@ -554,6 +595,7 @@ void AEnemyAIPawn::FireBoss()
 
 			if (projectile)
 			{
+				AudioEffect->Play();
 				projectile->Start();
 			}
 		}

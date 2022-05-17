@@ -13,6 +13,7 @@
 #include "PlayerShipPawn.h"
 #include "DropItems.h"
 
+#include "Components/WidgetComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include "Components/BoxComponent.h"
 #include "Components/AudioComponent.h"
@@ -52,6 +53,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Materials")
 		UMaterialInterface* MaterialTwo;
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+		UMaterialInterface* MaterialThree;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
@@ -110,6 +114,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UAudioComponent* AudioEffect;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectPunch;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 		USoundBase* AudioEffectDie;
 
@@ -121,6 +128,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop")
 		TSubclassOf<ADropItems> DropItem;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget")
+		UWidgetComponent* BarHP;
 
 	//=========================
 	// Create Variables for AI Ship
@@ -184,7 +194,10 @@ protected:
 		float ExplosionDamageEnemy = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
-		float ScoreDeath = 0;
+		float ScoreDeathMin = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Score")
+		float ScoreDeathMax = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Drop | Drop Count")
 		float DropCoin = 0;
@@ -245,6 +258,15 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UMatineeCameraShake> CamShake;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Set Material")
+		bool tbSetMaterial = false;
+
+	UFUNCTION()
+		float GetCurretHealth();
+
+	UFUNCTION()
+		float GetMaxHealth();
+
 	void EnableCollision();
 	FVector GetEyesPosition();
 
@@ -289,7 +311,6 @@ public:
 
 	FVector ArrowTarget;
 
-	bool tbSetMaterial = false;
 	bool tbRotateArrow = false;
 	bool tbStoppedMove = true;
 	bool tbRotateShip = false;

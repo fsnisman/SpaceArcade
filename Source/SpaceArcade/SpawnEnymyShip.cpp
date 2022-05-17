@@ -1,5 +1,6 @@
 #include "SpawnEnymyShip.h"
 #include "TimerManager.h"
+#include "GameHud.h"
 #include "TriggerBoxSpawn.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,7 +25,9 @@ void ASpawnEnymyShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (this)
+	AGameHud* GameHud = Cast<AGameHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	if (this && GameHud->bPause == false)
 	{
 		AddActorWorldOffset(FVector(SpeedMovement + DeltaTime));
 	}
@@ -65,7 +68,10 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 		if (SpawnBoss == true)
 		{
 			FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
+			APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 			AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+			playerShip->SpawnTextFightBoss = true;
 
 			NewEnemy->tbRotateShip = bRotateShipTrigger;
 			NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
