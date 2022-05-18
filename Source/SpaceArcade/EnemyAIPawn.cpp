@@ -419,13 +419,13 @@ void AEnemyAIPawn::Die()
 	}
 }
 
-// Finction for Track DamageTaked
+//Finction for Track DamageTaked
 void AEnemyAIPawn::DamageTaked(float DamageValue)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Ship %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
-// Finction for Shoot Enemy Ship
+//Finction for Shoot Enemy Ship
 void AEnemyAIPawn::Fire()
 {
 	ShootEffect->ActivateSystem();
