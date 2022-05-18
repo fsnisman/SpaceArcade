@@ -1,58 +1,73 @@
+/*
+*  Библеотеки
+*/
+
 #include "HealthComponent.h"
 
-// Function for assing a value Health Point
+/*
+*  Код
+*/
+
+// Инцилизация объекта
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	CurrentHealth = MaxHealth;
 }
 
+// Начало действий при создании объекта
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	// Приписывание значения максимального здоровья к текущему
 	CurrentHealth = MaxHealth;
 }
 
-// Function Take Damege for Health Component 
+// Получение урона 
 bool UHealthComponent::TDamage(FDamageData DamageData)
 {
+	// Значение урона
 	float TakedDamageValue = DamageData.DamageValue;
+	// Вычитание текущего значение от урона
 	CurrentHealth -= TakedDamageValue;
 
 	bool bWasDestroyed = false;
+	// Проверка на значение текущего значения
 	if (CurrentHealth <= 0)
 	{
+		// Уничтожения объекта
 		bWasDestroyed = true;
 		if (OnDie.IsBound())
 			OnDie.Broadcast();
 	}
 	else
 	{
+		// Измеенеия здоровья объекту
 		if (OnDamaged.IsBound())
 			OnDamaged.Broadcast(TakedDamageValue);
 	}
 	return bWasDestroyed;
 }
 
-// Function for get Health Point
+// Получение текущего здоровья
 float UHealthComponent::GetHealth() const
 {
 	return CurrentHealth;
 }
 
+// Получение максимального здоровья
 float UHealthComponent::GetHealthMax() const
 {
 	return MaxHealth;
 }
 
-// Function for check Health Point
+// Обновление значения здоровья
 float UHealthComponent::GetHealthState() const
 {
 	return CurrentHealth / MaxHealth;
 }
 
-// Function for Add Health Point
+// Добавление здоровья к текущему здоровью
 void UHealthComponent::AddHealth(float AddiditionalHealthValue)
 {
 	CurrentHealth += AddiditionalHealthValue;

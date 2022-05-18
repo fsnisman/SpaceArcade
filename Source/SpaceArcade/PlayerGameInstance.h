@@ -1,13 +1,21 @@
 /*
-*	Класс Player Game Instance для глобыльной иформации игрового цикла
-*	Хранит в себе переменные баланса, улучшений, достижений.
+*	РљР»Р°СЃСЃ Player Game Instance РґР»СЏ РіР»РѕР±С‹Р»СЊРЅРѕР№ РёС„РѕСЂРјР°С†РёРё РёРіСЂРѕРІРѕРіРѕ С†РёРєР»Р°
+*	РҐСЂР°РЅРёС‚ РІ СЃРµР±Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ Р±Р°Р»Р°РЅСЃР°, СѓР»СѓС‡С€РµРЅРёР№, РґРѕСЃС‚РёР¶РµРЅРёР№.
 */
 
 #pragma once
 
+/*
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
+*/
+
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "PlayerGameInstance.generated.h"
+
+/*
+*  РљР»Р°СЃСЃ
+*/
 
 UCLASS()
 class SPACEARCADE_API UPlayerGameInstance : public UGameInstance
@@ -17,29 +25,29 @@ class SPACEARCADE_API UPlayerGameInstance : public UGameInstance
 public:
 
 	//////////////////////////
-	//// Переменный игрока
+	//// РџРµСЂРµРјРµРЅРЅС‹Р№ РёРіСЂРѕРєР°
 
-	// Переменный баланса игрока
+	// РџРµСЂРµРјРµРЅРЅС‹Р№ Р±Р°Р»Р°РЅСЃР° РёРіСЂРѕРєР°
 	int ScoreOfPlayre = 0;
 	int CoinOfPlayer = 0;
 	int ShardOfPlayer = 0;
 
-	// Переменные улучшения
+	// РџРµСЂРµРјРµРЅРЅС‹Рµ СѓР»СѓС‡С€РµРЅРёСЏ
 	float UpgradeDamage = 0;
 	float UpgradeHealht = 0;
 	float UpgradeReloadSpecialCannon = 0;
 
-	// Переменные уровня улучшения
+	// РџРµСЂРµРјРµРЅРЅС‹Рµ СѓСЂРѕРІРЅСЏ СѓР»СѓС‡С€РµРЅРёСЏ
 	int LevelUpgradeDamage = 0;
 	int LevelUpgradeHealht = 0;
 	int LevelUpgradeReloadSpecialCannon = 0;
 
-	// Констатные перменные максимального уровня улучшения
+	// РљРѕРЅСЃС‚Р°С‚РЅС‹Рµ РїРµСЂРјРµРЅРЅС‹Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ СѓР»СѓС‡С€РµРЅРёСЏ
 	const int LevelUpgradeDamageMax = 20;
 	const int LevelUpgradeHealhtMax = 20;
 	const int LevelUpgradeReloadSpecialCannonMax = 20;
 
-	// Переменные для достижений
+	// РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РґРѕСЃС‚РёР¶РµРЅРёР№
 	int ChallengeScoreMax = 3000;
 	int ChallengeEnemyDiedMax = 100;
 };
