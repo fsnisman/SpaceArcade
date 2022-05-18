@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "ProjectTileEnemy.h"
@@ -8,10 +8,10 @@
 #include "EnemyAIPawn.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Иницилизация объекта
+// РРЅРёС†РёР»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 AProjectTileEnemy::AProjectTileEnemy()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -27,99 +27,99 @@ AProjectTileEnemy::AProjectTileEnemy()
 	BulletEffect->SetupAttachment(RootComponent);
 }
 
-// Функция Начала движения 
+// Р¤СѓРЅРєС†РёСЏ РќР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ 
 void AProjectTileEnemy::Start()
 {
-	// Запуск таймера для начала движения
+	// Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР° РґР»СЏ РЅР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectTileEnemy::Move, MoveRate, true, MoveRate);
-	// Уничтожение объекта при пройденном расстоянии
+	// РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р° РїСЂРё РїСЂРѕР№РґРµРЅРЅРѕРј СЂР°СЃСЃС‚РѕСЏРЅРёРё
 	SetLifeSpan(FlyRange / MoveSpeed);
 }
 
-// Функция пересечения объекта с другими объектами
+// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 void AProjectTileEnemy::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Переменная владельца
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РІР»Р°РґРµР»СЊС†Р°
 	AActor* owner = GetOwner();
-	// Переменная владеющего владельца
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РІР»Р°РґРµСЋС‰РµРіРѕ РІР»Р°РґРµР»СЊС†Р°
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
-	// Переменная особенного снаряда
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РѕСЃРѕР±РµРЅРЅРѕРіРѕ СЃРЅР°СЂСЏРґР°
 	AProjectTileEnemy* FireSpecial = this;
 
-	// Проверка на выпускающего снаряд
+	// РџСЂРѕРІРµСЂРєР° РЅР° РІС‹РїСѓСЃРєР°СЋС‰РµРіРѕ СЃРЅР°СЂСЏРґ
 	if (OtherActor == GetInstigator())
 	{
 		return;
 	}
 
-	// Проверка на наличе тега "FireSpecial"
+	// РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡Рµ С‚РµРіР° "FireSpecial"
 	if (FireSpecial->ActorHasTag(TEXT("FireSpecial")))
 	{
-		// Проверка объекта на владельца
+		// РџСЂРѕРІРµСЂРєР° РѕР±СЉРµРєС‚Р° РЅР° РІР»Р°РґРµР»СЊС†Р°
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
-			// Каст на передачу урона
+			// РљР°СЃС‚ РЅР° РїРµСЂРµРґР°С‡Сѓ СѓСЂРѕРЅР°
 			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-			// Проверка на создание объекта
+			// РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 			if (damageTakerActor)
 			{
-				// Создание переменно уроная
+				// РЎРѕР·РґР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕ СѓСЂРѕРЅР°СЏ
 				FDamageData damageData;
-				// Запись урона в переменную
+				// Р—Р°РїРёСЃСЊ СѓСЂРѕРЅР° РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
 				damageData.DamageValue = Damage;
-				// Проверка на владельца
+				// РџСЂРѕРІРµСЂРєР° РЅР° РІР»Р°РґРµР»СЊС†Р°
 				damageData.Instigator = owner;
-				// От кого урон
+				// РћС‚ РєРѕРіРѕ СѓСЂРѕРЅ
 				damageData.DamageMaker = this;
 
-				// Передача урона
+				// РџРµСЂРµРґР°С‡Р° СѓСЂРѕРЅР°
 				damageTakerActor->TDamage(damageData);
 			}
 			else
 			{
-				// Унчитожить объект
+				// РЈРЅС‡РёС‚РѕР¶РёС‚СЊ РѕР±СЉРµРєС‚
 				OtherActor->Destroy();
 			}
 		}
 	}
 	else
-	{	// Проверка объекта на владельца
+	{	// РџСЂРѕРІРµСЂРєР° РѕР±СЉРµРєС‚Р° РЅР° РІР»Р°РґРµР»СЊС†Р°
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
-			// Каст на передачу урона
+			// РљР°СЃС‚ РЅР° РїРµСЂРµРґР°С‡Сѓ СѓСЂРѕРЅР°
 			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-			// Проверка на создание объекта
+			// РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 			if (damageTakerActor)
 			{
-				// Создание переменно уроная
+				// РЎРѕР·РґР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕ СѓСЂРѕРЅР°СЏ
 				FDamageData damageData;
-				// Запись урона в переменную
+				// Р—Р°РїРёСЃСЊ СѓСЂРѕРЅР° РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
 				damageData.DamageValue = Damage;
-				// Проверка на владельца
+				// РџСЂРѕРІРµСЂРєР° РЅР° РІР»Р°РґРµР»СЊС†Р°
 				damageData.Instigator = owner;
-				// От кого урон
+				// РћС‚ РєРѕРіРѕ СѓСЂРѕРЅ
 				damageData.DamageMaker = this;
 
-				// Передача урона
+				// РџРµСЂРµРґР°С‡Р° СѓСЂРѕРЅР°
 				damageTakerActor->TDamage(damageData);
 
-				// Уничтожение снаряда
+				// РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ СЃРЅР°СЂСЏРґР°
 				Destroy();
 			}
 			else
 			{
-				// Уничтожение объекта
+				// РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р°
 				OtherActor->Destroy();
 			}
 		}
 	}
 }
 
-// Функция движения 
+// Р¤СѓРЅРєС†РёСЏ РґРІРёР¶РµРЅРёСЏ 
 void AProjectTileEnemy::Move()
 {
-	// Переменная на следующую позицию
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ РїРѕР·РёС†РёСЋ
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed * MoveRate;
-	// Движения на слеюущую позицию
+	// Р”РІРёР¶РµРЅРёСЏ РЅР° СЃР»РµСЋСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ
 	SetActorLocation(nextPosition);
 }

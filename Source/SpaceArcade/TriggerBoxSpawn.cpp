@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "TriggerBoxSpawn.h"
@@ -8,20 +8,20 @@
 #include "DrawDebugHelpers.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Инициализация объекта
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 ATriggerBoxSpawn::ATriggerBoxSpawn()
 {
-	// Динамическая проверка на пересечение с другими объектами
+	// Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° РЅР° РїРµСЂРµСЃРµС‡РµРЅРёРµ СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 	OnActorBeginOverlap.AddDynamic(this, &ATriggerBoxSpawn::OnOverlapBegin);
 }
 
-// Пересечение объекта 
+// РџРµСЂРµСЃРµС‡РµРЅРёРµ РѕР±СЉРµРєС‚Р° 
 void ATriggerBoxSpawn::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	// Цикл на проверку спав врагов с другими объектами полученные в мировом пространстве
+	// Р¦РёРєР» РЅР° РїСЂРѕРІРµСЂРєСѓ СЃРїР°РІ РІСЂР°РіРѕРІ СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё РїРѕР»СѓС‡РµРЅРЅС‹Рµ РІ РјРёСЂРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ
 	for (TActorIterator<AEnemyAIPawn> EnemyItr(GetWorld()); EnemyItr; ++EnemyItr)
 	{
 		AEnemyAIPawn* EnemyActor = *EnemyItr;

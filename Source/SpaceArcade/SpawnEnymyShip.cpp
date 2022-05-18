@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "SpawnEnymyShip.h"
@@ -10,10 +10,10 @@
 #include "Kismet/GameplayStatics.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Иницилизация объекта
+// РРЅРёС†РёР»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 ASpawnEnymyShip::ASpawnEnymyShip()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,30 +30,30 @@ ASpawnEnymyShip::ASpawnEnymyShip()
 
 }
 
-// Обновление объекта в каждом тике
+// РћР±РЅРѕРІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ РєР°Р¶РґРѕРј С‚РёРєРµ
 void ASpawnEnymyShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	// Каст на худ
+	// РљР°СЃС‚ РЅР° С…СѓРґ
 	AGameHud* GameHud = Cast<AGameHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
-	// Проверка на объект и на паузу, если нет, то объект движется
+	// РџСЂРѕРІРµСЂРєР° РЅР° РѕР±СЉРµРєС‚ Рё РЅР° РїР°СѓР·Сѓ, РµСЃР»Рё РЅРµС‚, С‚Рѕ РѕР±СЉРµРєС‚ РґРІРёР¶РµС‚СЃСЏ
 	if (this && GameHud->bPause == false)
 	{
 		AddActorWorldOffset(FVector(SpeedMovement + DeltaTime));
 	}
 }
 
-// Функция пересечения объекта с другими объектами
+// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 void ASpawnEnymyShip::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Цикл перебора тригер для проверки на пересечения с другими объектами
+	// Р¦РёРєР» РїРµСЂРµР±РѕСЂР° С‚СЂРёРіРµСЂ РґР»СЏ РїСЂРѕРІРµСЂРєРё РЅР° РїРµСЂРµСЃРµС‡РµРЅРёСЏ СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 	for (TActorIterator<ATriggerBoxSpawn> TriggerItr(GetWorld()); TriggerItr; ++TriggerItr)
 	{
 		ATriggerBoxSpawn* TriggerActor = *TriggerItr;
 
-		// Если пересекает с другим объектом, то остановить и вызвать функцию спавна врагов
+		// Р•СЃР»Рё РїРµСЂРµСЃРµРєР°РµС‚ СЃ РґСЂСѓРіРёРј РѕР±СЉРµРєС‚РѕРј, С‚Рѕ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ Рё РІС‹Р·РІР°С‚СЊ С„СѓРЅРєС†РёСЋ СЃРїР°РІРЅР° РІСЂР°РіРѕРІ
 		if (OtherActor == TriggerActor)
 		{
 			SpeedMovement = FVector(0, 0, 0);
@@ -67,29 +67,29 @@ void ASpawnEnymyShip::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	}
 }
 
-// Создание врагов
+// РЎРѕР·РґР°РЅРёРµ РІСЂР°РіРѕРІ
 void ASpawnEnymyShip::SpawnEnemyShip()
 {
-	// Переменна для таймера
+	// РџРµСЂРµРјРµРЅРЅР° РґР»СЏ С‚Р°Р№РјРµСЂР°
 	FTimerHandle TargetingTimerHandle;
 
-	// Проверка на наличие тега "SpawnBoss"
+	// РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ С‚РµРіР° "SpawnBoss"
 	if (this->ActorHasTag((TEXT("SpawnBoss"))))
 	{
-		// Проверка на SpawnBoss
+		// РџСЂРѕРІРµСЂРєР° РЅР° SpawnBoss
 		if (SpawnBoss == true)
 		{
-			// Переменная для движения
+			// РџРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РґРІРёР¶РµРЅРёСЏ
 			FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
-			// Переменная на каст игрока
+			// РџРµСЂРµРјРµРЅРЅР°СЏ РЅР° РєР°СЃС‚ РёРіСЂРѕРєР°
 			APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
-			// Переменная спавн врага
+			// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРїР°РІРЅ РІСЂР°РіР°
 			AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-			// Вызов текста с сражением босса
+			// Р’С‹Р·РѕРІ С‚РµРєСЃС‚Р° СЃ СЃСЂР°Р¶РµРЅРёРµРј Р±РѕСЃСЃР°
 			playerShip->SpawnTextFightBoss = true;
 
-			// Перезапись значение врага из этого класса
+			// РџРµСЂРµР·Р°РїРёСЃСЊ Р·РЅР°С‡РµРЅРёРµ РІСЂР°РіР° РёР· СЌС‚РѕРіРѕ РєР»Р°СЃСЃР°
 			NewEnemy->tbRotateShip = bRotateShipTrigger;
 			NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
 			NewEnemy->tbStoppedMove = bStopMoveTrigger;
@@ -105,30 +105,30 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 			NewEnemy->iCountProjectTile = tCountProjectTile;
 			NewEnemy->dDropItem = tDropItem;
 
-			// Установка по каким точкам двигаться
+			// РЈСЃС‚Р°РЅРѕРІРєР° РїРѕ РєР°РєРёРј С‚РѕС‡РєР°Рј РґРІРёРіР°С‚СЊСЃСЏ
 			NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
 
-			// Когда остановить спавн
+			// РљРѕРіРґР° РѕСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРїР°РІРЅ
 			UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);
 
-			//Перезапись перменной
+			//РџРµСЂРµР·Р°РїРёСЃСЊ РїРµСЂРјРµРЅРЅРѕР№
 			SpawnBoss = false;
 		}
 	}
 	else
 	{
-		// Проверка на количество врагов
+		// РџСЂРѕРІРµСЂРєР° РЅР° РєРѕР»РёС‡РµСЃС‚РІРѕ РІСЂР°РіРѕРІ
 		if (NumberCount < CountEnemy)
 		{
-			// Переменная для движения
+			// РџРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РґРІРёР¶РµРЅРёСЏ
 			FTransform SpawnTransform(EnemySpawnPoint->GetComponentRotation(), EnemySpawnPoint->GetComponentLocation(), FVector(1));
 
 			NumberCount++;
 
-			// Переменная спавн врага
+			// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРїР°РІРЅ РІСЂР°РіР°
 			AEnemyAIPawn* NewEnemy = GetWorld()->SpawnActorDeferred<AEnemyAIPawn>(SpawnEnemyClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-			// Перезапись значение врага из этого класса
+			// РџРµСЂРµР·Р°РїРёСЃСЊ Р·РЅР°С‡РµРЅРёРµ РІСЂР°РіР° РёР· СЌС‚РѕРіРѕ РєР»Р°СЃСЃР°
 			NewEnemy->tbRotateShip = bRotateShipTrigger;
 			NewEnemy->tbBackMoveShip = bBackMoveShipTrigger;
 			NewEnemy->tbStoppedMove = bStopMoveTrigger;
@@ -143,7 +143,7 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 			NewEnemy->FfTimerFire = tffTimerFire;
 			NewEnemy->iCountProjectTile = tCountProjectTile;
 
-			// Проверка на создание специального врага
+			// РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕР·РґР°РЅРёРµ СЃРїРµС†РёР°Р»СЊРЅРѕРіРѕ РІСЂР°РіР°
 			if (SpawnSpecialEnemy && NumberCount == CountEnemy)
 			{
 				tDropItem = tDropItemSpecial;
@@ -155,30 +155,30 @@ void ASpawnEnymyShip::SpawnEnemyShip()
 				NewEnemy->dDropItem = tDropItem;
 			}
 
-			// Установка по каким точкам двигаться
+			// РЈСЃС‚Р°РЅРѕРІРєР° РїРѕ РєР°РєРёРј С‚РѕС‡РєР°Рј РґРІРёРіР°С‚СЊСЃСЏ
 			NewEnemy->SetPatrollingPoints(EnemyTrackingPoints);
 
-			// Когда остановить спавн
+			// РљРѕРіРґР° РѕСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРїР°РІРЅ
 			UGameplayStatics::FinishSpawningActor(NewEnemy, SpawnTransform);
 		}
 		else
 		{
-			// Уничтожение объекта
+			// РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р°
 			Destroy();
 
-			// Очистка таймера
+			// РћС‡РёСЃС‚РєР° С‚Р°Р№РјРµСЂР°
 			GetWorld()->GetTimerManager().ClearTimer(TargetingTimerHandle);
 		}
 	}
 }
 
-// Таймер спавна
+// РўР°Р№РјРµСЂ СЃРїР°РІРЅР°
 void ASpawnEnymyShip::TimerSpawn()
 {
-	// Переменная для таймера
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ С‚Р°Р№РјРµСЂР°
 	FTimerHandle TargetingTimerHandle;
 
-	// Запуск таймера для спавна врагов
+	// Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР° РґР»СЏ СЃРїР°РІРЅР° РІСЂР°РіРѕРІ
 	GetWorld()->GetTimerManager().SetTimer(TargetingTimerHandle, this, &ASpawnEnymyShip::SpawnEnemyShip, SpawnEnemyRate, true, SpawnEnemyRate);
 }
 

@@ -1,11 +1,11 @@
 /*
-*	Класс Puase Widget для отображение паузы.
+*	РљР»Р°СЃСЃ Puase Widget РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РїР°СѓР·С‹.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "Components/Image.h"
@@ -18,7 +18,7 @@
 #include "PuaseWidget.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -29,65 +29,65 @@ class SPACEARCADE_API UPuaseWidget : public UUserWidget
 public:
 
 	//////////////////////////
-	//// Компоненты
+	//// РљРѕРјРїРѕРЅРµРЅС‚С‹
 
-	// Компонент Канвас
+	// РљРѕРјРїРѕРЅРµРЅС‚ РљР°РЅРІР°СЃ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UCanvasPanel* MainCanvasPanel;
 
-	// Компонент для блюра заднего фона
+	// РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ Р±Р»СЋСЂР° Р·Р°РґРЅРµРіРѕ С„РѕРЅР°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UBackgroundBlur* BackgroundUI;
 
-	// Компонент для заднего фона
+	// РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ Р·Р°РґРЅРµРіРѕ С„РѕРЅР°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UImage* BackgroundPause;
 
-	// Компонент для кнопки воспроизведения игры
+	// РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ РєРЅРѕРїРєРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ РёРіСЂС‹
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UButton* PlayButton;
 
-	// Комопнент для кнопки рестарта
+	// РљРѕРјРѕРїРЅРµРЅС‚ РґР»СЏ РєРЅРѕРїРєРё СЂРµСЃС‚Р°СЂС‚Р°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UButton* RestartButton;
 
-	// Компонент для кнопки выхода
+	// РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ РєРЅРѕРїРєРё РІС‹С…РѕРґР°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UButton* ExitButton;
 
-	// Компонент для анимации
+	// РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ Р°РЅРёРјР°С†РёРё
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 		UWidgetAnimation* Animation;
 
 public:
 	
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Инициализация виджета
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІРёРґР¶РµС‚Р°
 	virtual void NativeConstruct() override;
 
-	// Функция для нажитии кнопки рестарта
+	// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё СЂРµСЃС‚Р°СЂС‚Р°
 	UFUNCTION()
 		void OnButtonRestartGameClicked();
 	
-	// Функция для нажитии кнопки воспроизведния игры
+	// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІРѕСЃРїСЂРѕРёР·РІРµРґРЅРёСЏ РёРіСЂС‹
 	UFUNCTION()
 		void OnButtonPlayGameClicked();
 
-	// Функция для нажитии кнопки выхода
+	// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІС‹С…РѕРґР°
 	UFUNCTION()
 		void OnButtonExitGameClicked();
 
 public:
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Переменная названия уровня
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РЅР°Р·РІР°РЅРёСЏ СѓСЂРѕРІРЅСЏ
 	FName NameLevel;
 
-	// Стринговая переменая для названия уровня
+	// РЎС‚СЂРёРЅРіРѕРІР°СЏ РїРµСЂРµРјРµРЅР°СЏ РґР»СЏ РЅР°Р·РІР°РЅРёСЏ СѓСЂРѕРІРЅСЏ
 	FString SNameLevel;
 
 	bool bRemovePrefixString = true;

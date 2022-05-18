@@ -1,11 +1,11 @@
 /*
-*	Класс Spawn Enemy Ship для спавна врагов.
+*	РљР»Р°СЃСЃ Spawn Enemy Ship РґР»СЏ СЃРїР°РІРЅР° РІСЂР°РіРѕРІ.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "TimerManager.h"
@@ -19,7 +19,7 @@
 #include "SpawnEnymyShip.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -30,144 +30,144 @@ class SPACEARCADE_API ASpawnEnymyShip : public AActor
 protected:
 
 	//////////////////////////
-	//// Компоненты
+	//// РљРѕРјРїРѕРЅРµРЅС‚С‹
 
-	// Компонент направление
+	// РљРѕРјРїРѕРЅРµРЅС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UArrowComponent* EnemySpawnPoint;
 
-	// Компонент коллайдера боксового
+	// РљРѕРјРїРѕРЅРµРЅС‚ РєРѕР»Р»Р°Р№РґРµСЂР° Р±РѕРєСЃРѕРІРѕРіРѕ
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Массив спаврнов врагов
+	// РњР°СЃСЃРёРІ СЃРїР°РІСЂРЅРѕРІ РІСЂР°РіРѕРІ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		TSubclassOf<AEnemyAIPawn> SpawnEnemyClass;
 	
-	// Проверка на поворот корабля
+	// РџСЂРѕРІРµСЂРєР° РЅР° РїРѕРІРѕСЂРѕС‚ РєРѕСЂР°Р±Р»СЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bRotateShipTrigger;
 
-	// Проверка поворот корабля на игрока
+	// РџСЂРѕРІРµСЂРєР° РїРѕРІРѕСЂРѕС‚ РєРѕСЂР°Р±Р»СЏ РЅР° РёРіСЂРѕРєР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bRotateShipToPlayerTrigger;
 
-	// Проверка на поворот направления стрельбы
+	// РџСЂРѕРІРµСЂРєР° РЅР° РїРѕРІРѕСЂРѕС‚ РЅР°РїСЂР°РІР»РµРЅРёСЏ СЃС‚СЂРµР»СЊР±С‹
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bRotateArrowTrigger;
 
-	// Проверка на движение корабля задом
+	// РџСЂРѕРІРµСЂРєР° РЅР° РґРІРёР¶РµРЅРёРµ РєРѕСЂР°Р±Р»СЏ Р·Р°РґРѕРј
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bBackMoveShipTrigger;
 
-	// Проверка на остановку корабля
+	// РџСЂРѕРІРµСЂРєР° РЅР° РѕСЃС‚Р°РЅРѕРІРєСѓ РєРѕСЂР°Р±Р»СЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bStopMoveTrigger;
 
-	// Проверка на движение корабля вправо-влево
+	// РџСЂРѕРІРµСЂРєР° РЅР° РґРІРёР¶РµРЅРёРµ РєРѕСЂР°Р±Р»СЏ РІРїСЂР°РІРѕ-РІР»РµРІРѕ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		bool bMoveRightLeft;
 
-	// Значение на сколько остановить корабль
+	// Р—РЅР°С‡РµРЅРёРµ РЅР° СЃРєРѕР»СЊРєРѕ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РєРѕСЂР°Р±Р»СЊ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		float fValueTimerStopMove;
 
-	// Значение на частосту спавна врагов
+	// Р—РЅР°С‡РµРЅРёРµ РЅР° С‡Р°СЃС‚РѕСЃС‚Сѓ СЃРїР°РІРЅР° РІСЂР°РіРѕРІ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		float SpawnEnemyRate = 1;
 
-	// Значение скорости движения
+	// Р—РЅР°С‡РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
 		float tfMoveSpeed = 1;
 
-	// Значение скорости поворота
+	// Р—РЅР°С‡РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РїРѕРІРѕСЂРѕС‚Р°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
 		float tfRotationSpeed = 1;
 
-	// Значение точности движения
+	// Р—РЅР°С‡РµРЅРёРµ С‚РѕС‡РЅРѕСЃС‚Рё РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
 		float tfMovementAccurancy = 1;
 
-	// Значение склаживания движения вперед
+	// Р—РЅР°С‡РµРЅРёРµ СЃРєР»Р°Р¶РёРІР°РЅРёСЏ РґРІРёР¶РµРЅРёСЏ РІРїРµСЂРµРґ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
 		float tfForwardSmootheness = 1;
 
-	// Значение склаживания движения пововрота
+	// Р—РЅР°С‡РµРЅРёРµ СЃРєР»Р°Р¶РёРІР°РЅРёСЏ РґРІРёР¶РµРЅРёСЏ РїРѕРІРѕРІСЂРѕС‚Р°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Movement")
 		float tfRotationSmootheness = 1;
 
-	// Значения таймера, когда коллизия становится активной
+	// Р—РЅР°С‡РµРЅРёСЏ С‚Р°Р№РјРµСЂР°, РєРѕРіРґР° РєРѕР»Р»РёР·РёСЏ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ Р°РєС‚РёРІРЅРѕР№
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Timer")
 		float tffTimerFire = 1;
 
-	// Значения сколько выпустить снарядов
+	// Р—РЅР°С‡РµРЅРёСЏ СЃРєРѕР»СЊРєРѕ РІС‹РїСѓСЃС‚РёС‚СЊ СЃРЅР°СЂСЏРґРѕРІ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params |  Count ProjectTile")
 		int tCountProjectTile = 1;
 
-	// Массив точек для движения
+	// РњР°СЃСЃРёРІ С‚РѕС‡РµРє РґР»СЏ РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn enemy params")
 		TArray<ATargetPoint*> EnemyTrackingPoints;
 
-	// Значения сколько спавнить врагов
+	// Р—РЅР°С‡РµРЅРёСЏ СЃРєРѕР»СЊРєРѕ СЃРїР°РІРЅРёС‚СЊ РІСЂР°РіРѕРІ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Count Enemy")
 		float CountEnemy = 5;
 
-	// Значения скольков врагов убито
+	// Р—РЅР°С‡РµРЅРёСЏ СЃРєРѕР»СЊРєРѕРІ РІСЂР°РіРѕРІ СѓР±РёС‚Рѕ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Died Enemy")
 		float DiedEnemy = 0;
 
-	// Проверка на спавн босса
+	// РџСЂРѕРІРµСЂРєР° РЅР° СЃРїР°РІРЅ Р±РѕСЃСЃР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Boss")
 		bool SpawnBoss = false;
 
-	// Проверка на особенного врага
+	// РџСЂРѕРІРµСЂРєР° РЅР° РѕСЃРѕР±РµРЅРЅРѕРіРѕ РІСЂР°РіР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Boss")
 		bool SpawnSpecialEnemy = false;
 
-	// Вектор скорости движения
+	// Р’РµРєС‚РѕСЂ СЃРєРѕСЂРѕСЃС‚Рё РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Movement")
 		FVector SpeedMovement;
 
-	// Массив дропа
+	// РњР°СЃСЃРёРІ РґСЂРѕРїР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop")
 		TSubclassOf<ADropItems> tDropItem;
 
-	// Массив на особенного дропа
+	// РњР°СЃСЃРёРІ РЅР° РѕСЃРѕР±РµРЅРЅРѕРіРѕ РґСЂРѕРїР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop")
 		TSubclassOf<ADropItems> tDropItemSpecial;
 
 public:	
 	
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Инициализация объекта
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 	ASpawnEnymyShip();
 
-	// Обновление объекта в каждом тике
+	// РћР±РЅРѕРІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ РєР°Р¶РґРѕРј С‚РёРєРµ
 	virtual void Tick(float DeltaTime) override;
 
-	// Функция пересечения объекта с другими объектами
+	// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 	UFUNCTION()
 		void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult); // Trigger
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Значение количество заспавненных врагов
+	// Р—РЅР°С‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЃРїР°РІРЅРµРЅРЅС‹С… РІСЂР°РіРѕРІ
 	float NumberCount = 0;
 
 protected:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Создание врагов
+	// РЎРѕР·РґР°РЅРёРµ РІСЂР°РіРѕРІ
 	void SpawnEnemyShip();
 
-	// Частоста создание врагов
+	// Р§Р°СЃС‚РѕСЃС‚Р° СЃРѕР·РґР°РЅРёРµ РІСЂР°РіРѕРІ
 	void TimerSpawn();
 };

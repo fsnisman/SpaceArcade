@@ -1,12 +1,12 @@
 /*
-*	Класс Trigger Box Spawn нужен для триггер спавна врагов,
-*	когда они ее пересекают.
+*	РљР»Р°СЃСЃ Trigger Box Spawn РЅСѓР¶РµРЅ РґР»СЏ С‚СЂРёРіРіРµСЂ СЃРїР°РІРЅР° РІСЂР°РіРѕРІ,
+*	РєРѕРіРґР° РѕРЅРё РµРµ РїРµСЂРµСЃРµРєР°СЋС‚.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "CoreMinimal.h"
@@ -14,7 +14,7 @@
 #include "TriggerBoxSpawn.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -25,12 +25,12 @@ class SPACEARCADE_API ATriggerBoxSpawn : public ATriggerBox
 public:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Инициализация объекта
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 	ATriggerBoxSpawn();
 
-	// Функция пересечения
+	// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor);
 };

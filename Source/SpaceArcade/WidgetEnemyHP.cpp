@@ -1,73 +1,73 @@
 /*
-*  Áèáëåîòåêè
+*  Ğ‘Ğ¸Ğ±Ğ»ĞµĞ¾Ñ‚ĞµĞºĞ¸
 */
 
 #include "WidgetEnemyHP.h"
 
 /*
-*  Êîä
+*  ĞšĞ¾Ğ´
 */
 
-// Èíèöèàëèçàöèÿ âèäæåòà
+// Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚Ğ°
 void UWidgetEnemyHP::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// Ïğîâåğêà íà ñîçäàíèå âğàãà
+	// ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ²Ñ€Ğ°Ğ³Ğ°
 	if (!OwnerEnemy.IsValid())
 	{
 		return;
 	}
 
-	// Óñòàíîâêà çíà÷åíèé çäîğîâüÿ âğàãó
+	// Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²ĞºĞ° Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğ¹ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ Ğ²Ñ€Ğ°Ğ³Ñƒ
 	SetHealt(OwnerEnemy->GetCurretHealth(), OwnerEnemy->GetMaxHealth());
 }
 
-// Îáíîâëåíèå âèäæåòà êàæäûé èãğîâîé òèê
+// ĞĞ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚Ğ° ĞºĞ°Ğ¶Ğ´Ñ‹Ğ¹ Ğ¸Ğ³Ñ€Ğ¾Ğ²Ğ¾Ğ¹ Ñ‚Ğ¸Ğº
 void UWidgetEnemyHP::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	// Ïğîâåğêà íà ñîçäàíèå âğàãà
+	// ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ²Ñ€Ğ°Ğ³Ğ°
 	if (!OwnerEnemy.IsValid())
 	{
 		return;
 	}
 
-	// Îáíîâëåíèå çíà÷åíèé çäîğîâüÿ âğàãó
+	// ĞĞ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğ¹ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ Ğ²Ñ€Ğ°Ğ³Ñƒ
 	UpdateHealth(OwnerEnemy->GetCurretHealth(), OwnerEnemy->GetMaxHealth());
 }
 
-// Óñòàíîâêà çäîğîâüÿ
+// Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²ĞºĞ° Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ
 void UWidgetEnemyHP::SetHealt(float CurretHealth, float MaxHealth)
 {
-	// Ñêğûâàòü âèäæåò, êîãäà çäğîâüå ïîëíîå
+	// Ğ¡ĞºÑ€Ñ‹Ğ²Ğ°Ñ‚ÑŒ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚, ĞºĞ¾Ğ³Ğ´Ğ° Ğ·Ğ´Ñ€Ğ¾Ğ²ÑŒĞµ Ğ¿Ğ¾Ğ»Ğ½Ğ¾Ğµ
 	ESlateVisibility WVisibility = ESlateVisibility::Hidden; 
 
-	// Óñòàíîâèòü òåêóùèå çíà÷åíèå çäğîâüÿ íà ìàêñèìàëüíîå çíà÷åíèå çäîğîâüÿ
+	// Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ñ‚ĞµĞºÑƒÑ‰Ğ¸Ğµ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ğ·Ğ´Ñ€Ğ¾Ğ²ÑŒÑ Ğ½Ğ° Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ
 	CurretHealth = MaxHealth;	
 
-	// Óñòàíîâèòü çíà÷åíèå òåêóùåãî çäîğîâüÿ è çíà÷åíèå âèäèìîñòè âèäæåòà
+	// Ğ£ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ Ğ¸ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ğ²Ğ¸Ğ´Ğ¸Ğ¼Ğ¾ÑÑ‚Ğ¸ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚Ğ°
 	EnemyBarHP->SetPercent(CurretHealth);					  
 	EnemyBarHP->SetVisibility(WVisibility);
 }
 
-// Îáíîâëåíèå çäîğîâüÿ
+// ĞĞ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ
 bool UWidgetEnemyHP::UpdateHealth(float CurretHealth, float MaxHealth)
 {
-	// Åñëè èçìåíèëîñü çíà÷åíèå òåêóùåãî çäîğîâüÿ îò ìàêñèìàëüíîãî, òî ñäåëàòü âèäæåò âèäèìûì
+	// Ğ•ÑĞ»Ğ¸ Ğ¸Ğ·Ğ¼ĞµĞ½Ğ¸Ğ»Ğ¾ÑÑŒ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ğµ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ Ğ¾Ñ‚ Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğ³Ğ¾, Ñ‚Ğ¾ ÑĞ´ĞµĞ»Ğ°Ñ‚ÑŒ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚ Ğ²Ğ¸Ğ´Ğ¸Ğ¼Ñ‹Ğ¼
 	if (OwnerEnemy->GetCurretHealth() != OwnerEnemy->GetMaxHealth())
 	{
 		ESlateVisibility WVisibility = ESlateVisibility::Visible;
 		EnemyBarHP->SetVisibility(WVisibility);
 	}
 
-	// Îáíîâëåíèå âèäæåò ïî òåêóùåìó çäîğîâüş
+	// ĞĞ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚ Ğ¿Ğ¾ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ¼Ñƒ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ
 	bool bWasDestroyed = false;
 	float Percent = CurretHealth / MaxHealth;
 	EnemyBarHP->SetPercent(Percent);
 
-	// Ïğîâåğêà òåêóùåãî çíà÷åíèÿ çäîğîâüÿ íà íóëü, åñëè äà, òî ñêğûòü âèäæåò
+	// ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ñ‚ĞµĞºÑƒÑ‰ĞµĞ³Ğ¾ Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ğ¸Ñ Ğ·Ğ´Ğ¾Ñ€Ğ¾Ğ²ÑŒÑ Ğ½Ğ° Ğ½ÑƒĞ»ÑŒ, ĞµÑĞ»Ğ¸ Ğ´Ğ°, Ñ‚Ğ¾ ÑĞºÑ€Ñ‹Ñ‚ÑŒ Ğ²Ğ¸Ğ´Ğ¶ĞµÑ‚
 	if (OwnerEnemy->GetCurretHealth() <= 0)
 	{
 		ESlateVisibility WVisibility = ESlateVisibility::Hidden;

@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "ProjectTile.h"
@@ -8,10 +8,10 @@
 #include "PlayerShipPawn.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Иницилизация объекта
+// РРЅРёС†РёР»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 AProjectTile::AProjectTile()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -31,67 +31,67 @@ AProjectTile::AProjectTile()
 	AudioEffectPunch = CreateDefaultSubobject<USoundBase>(TEXT("Audio Punch effect"));
 }
 
-// Функция Начала движения 
+// Р¤СѓРЅРєС†РёСЏ РќР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ 
 void AProjectTile::Start()
 {
-	// Запуск таймера для начала движения
+	// Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР° РґР»СЏ РЅР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectTile::Move, MoveRate, true, MoveRate);
-	// Уничтожение объекта при пройденном расстоянии
+	// РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р° РїСЂРё РїСЂРѕР№РґРµРЅРЅРѕРј СЂР°СЃСЃС‚РѕСЏРЅРёРё
 	SetLifeSpan(FlyRange / MoveSpeed);
 }
 
-// Функция пересечения объекта с другими объектами
+// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//Переменная на игрока
+	//РџРµСЂРµРјРµРЅРЅР°СЏ РЅР° РёРіСЂРѕРєР°
 	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	// Переменная владельца
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РІР»Р°РґРµР»СЊС†Р°
 	AActor* owner = GetOwner();
-	// Переменная владеющего владельца
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РІР»Р°РґРµСЋС‰РµРіРѕ РІР»Р°РґРµР»СЊС†Р°
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
 	
-	// Проверка на игрока
+	// РџСЂРѕРІРµСЂРєР° РЅР° РёРіСЂРѕРєР°
 	if (playerShip == OtherActor)
 	{
 		return;
 	}
 	else
 	{
-		// Запуск звука удара
+		// Р—Р°РїСѓСЃРє Р·РІСѓРєР° СѓРґР°СЂР°
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectPunch, GetActorLocation());
 
-		// Проверка объекта на владельца
+		// РџСЂРѕРІРµСЂРєР° РѕР±СЉРµРєС‚Р° РЅР° РІР»Р°РґРµР»СЊС†Р°
 		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
-			// Каст на передачу урона
+			// РљР°СЃС‚ РЅР° РїРµСЂРµРґР°С‡Сѓ СѓСЂРѕРЅР°
 			IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-			// Проверка на создание объекта
+			// РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 			if (damageTakerActor)
 			{
-				// Создание переменно уроная
+				// РЎРѕР·РґР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕ СѓСЂРѕРЅР°СЏ
 				FDamageData damageData;
-				// Запись урона в переменную
+				// Р—Р°РїРёСЃСЊ СѓСЂРѕРЅР° РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
 				damageData.DamageValue = Damage;
-				// Проверка на владельца
+				// РџСЂРѕРІРµСЂРєР° РЅР° РІР»Р°РґРµР»СЊС†Р°
 				damageData.Instigator = owner;
-				// От кого урон
+				// РћС‚ РєРѕРіРѕ СѓСЂРѕРЅ
 				damageData.DamageMaker = this;
 
-				// Передача урона
+				// РџРµСЂРµРґР°С‡Р° СѓСЂРѕРЅР°
 				damageTakerActor->TDamage(damageData);
 			}
 			else
 			{
-				// Уничтожить объект
+				// РЈРЅРёС‡С‚РѕР¶РёС‚СЊ РѕР±СЉРµРєС‚
 				OtherActor->Destroy();
 			}
 
-			// Проверка на наличе тега "SpecailCannon"
+			// РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡Рµ С‚РµРіР° "SpecailCannon"
 			if (!ActorHasTag(TEXT("SpecailCannon")))
 			{
-				// Создание эффекта
+				// РЎРѕР·РґР°РЅРёРµ СЌС„С„РµРєС‚Р°
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollisionEffect, GetActorTransform());
-				// Уничтожить снаряд
+				// РЈРЅРёС‡С‚РѕР¶РёС‚СЊ СЃРЅР°СЂСЏРґ
 				Destroy();
 			}
 		}
@@ -100,11 +100,11 @@ void AProjectTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	
 }
 
-// Функция движения 
+// Р¤СѓРЅРєС†РёСЏ РґРІРёР¶РµРЅРёСЏ 
 void AProjectTile::Move()
 {
-	// Переменная на следующую позицию
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ РїРѕР·РёС†РёСЋ
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed * MoveRate;
-	// Движения на слеюущую позицию
+	// Р”РІРёР¶РµРЅРёСЏ РЅР° СЃР»РµСЋСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ
 	SetActorLocation(nextPosition);
 }

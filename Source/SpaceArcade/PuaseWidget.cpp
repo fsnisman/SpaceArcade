@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "PuaseWidget.h"
@@ -9,66 +9,66 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Инициализация виджета
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІРёРґР¶РµС‚Р°
 void UPuaseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// Проигрования анимации
+	// РџСЂРѕРёРіСЂРѕРІР°РЅРёСЏ Р°РЅРёРјР°С†РёРё
 	PlayAnimation(Animation, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f, false);
-	// Остановить игровое время
+	// РћСЃС‚Р°РЅРѕРІРёС‚СЊ РёРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
 
-	// Получение название текущего уровня
+	// РџРѕР»СѓС‡РµРЅРёРµ РЅР°Р·РІР°РЅРёРµ С‚РµРєСѓС‰РµРіРѕ СѓСЂРѕРІРЅСЏ
 	SNameLevel = UGameplayStatics::GetCurrentLevelName(this, bRemovePrefixString);
-	// Перезацить название уровня
+	// РџРµСЂРµР·Р°С†РёС‚СЊ РЅР°Р·РІР°РЅРёРµ СѓСЂРѕРІРЅСЏ
 	NameLevel = FName(*SNameLevel);
 
-	// Динамическая инициализация функции "Функция для нажитии кнопки воспроизведния игры"
+	// Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё "Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІРѕСЃРїСЂРѕРёР·РІРµРґРЅРёСЏ РёРіСЂС‹"
 	if (PlayButton)
 	{
 		PlayButton->OnClicked.AddDynamic(this, &UPuaseWidget::OnButtonPlayGameClicked);
 	}
 
-	// Динамическая инициализация функции "Функция для нажитии кнопки рестарта"
+	// Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё "Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё СЂРµСЃС‚Р°СЂС‚Р°"
 	if (RestartButton)
 	{
 		RestartButton->OnClicked.AddDynamic(this, &UPuaseWidget::OnButtonRestartGameClicked);
 	}
 
-	// Динамическая инициализация функции "Функция для нажитии кнопки выхода"
+	// Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё "Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІС‹С…РѕРґР°"
 	if (ExitButton)
 	{
 		ExitButton->OnClicked.AddDynamic(this, &UPuaseWidget::OnButtonExitGameClicked);
 	}
 }
 
-// Функция для нажитии кнопки рестарта
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё СЂРµСЃС‚Р°СЂС‚Р°
 void UPuaseWidget::OnButtonRestartGameClicked()
 {
-	// Открыть текущий уровнь
+	// РћС‚РєСЂС‹С‚СЊ С‚РµРєСѓС‰РёР№ СѓСЂРѕРІРЅСЊ
 	UGameplayStatics::OpenLevel(this, NameLevel);
-	// Удалить все виджеты
+	// РЈРґР°Р»РёС‚СЊ РІСЃРµ РІРёРґР¶РµС‚С‹
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
 }
 
-// Функция для нажитии кнопки воспроизведния игры
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІРѕСЃРїСЂРѕРёР·РІРµРґРЅРёСЏ РёРіСЂС‹
 void UPuaseWidget::OnButtonPlayGameClicked()
 {
-	// Удалить все виджеты
+	// РЈРґР°Р»РёС‚СЊ РІСЃРµ РІРёРґР¶РµС‚С‹
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
-	// Запусть игровое время
+	// Р—Р°РїСѓСЃС‚СЊ РёРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
 }
 
-// Функция для нажитии кнопки выхода
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶РёС‚РёРё РєРЅРѕРїРєРё РІС‹С…РѕРґР°
 void UPuaseWidget::OnButtonExitGameClicked()
 {
-	// Открыть уровнь меню
+	// РћС‚РєСЂС‹С‚СЊ СѓСЂРѕРІРЅСЊ РјРµРЅСЋ
 	UGameplayStatics::OpenLevel(this, "MenuLevel");
-	// Удалить виджеты
+	// РЈРґР°Р»РёС‚СЊ РІРёРґР¶РµС‚С‹
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
 }

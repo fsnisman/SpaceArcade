@@ -1,3 +1,7 @@
+/*
+*	Класс Player Ship Pawn для снаряда игрока.
+*/
+
 #pragma once
 
 #include "CoreMinimal.h"

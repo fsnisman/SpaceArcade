@@ -1,11 +1,11 @@
 /*
-*	Класс Project Tile для снаряда игрока.
+*	РљР»Р°СЃСЃ Project Tile РґР»СЏ СЃРЅР°СЂСЏРґР° РёРіСЂРѕРєР°.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "Math/UnrealMathUtility.h"
@@ -19,7 +19,7 @@
 #include "ProjectTile.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -30,67 +30,67 @@ class SPACEARCADE_API AProjectTile : public AActor
 protected:
 
 	//////////////////////////
-	//// Компоненты
+	//// РљРѕРјРїРѕРЅРµРЅС‚С‹
 
-	// Компонент коллайдера боксового
+	// РљРѕРјРїРѕРЅРµРЅС‚ РєРѕР»Р»Р°Р№РґРµСЂР° Р±РѕРєСЃРѕРІРѕРіРѕ
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
 
-	// Компонент партикла снаряда
+	// РљРѕРјРїРѕРЅРµРЅС‚ РїР°СЂС‚РёРєР»Р° СЃРЅР°СЂСЏРґР°
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UParticleSystemComponent* LazerEffect;
 
-	// Компонент звука удара
+	// РљРѕРјРїРѕРЅРµРЅС‚ Р·РІСѓРєР° СѓРґР°СЂР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects Punch")
 		USoundBase* AudioEffectPunch;
 
-	// Компонент партикла удара
+	// РљРѕРјРїРѕРЅРµРЅС‚ РїР°СЂС‚РёРєР»Р° СѓРґР°СЂР°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Punch Partical")
 		UParticleSystem* CollisionEffect;
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Пременная скорости движения
+	// РџСЂРµРјРµРЅРЅР°СЏ СЃРєРѕСЂРѕСЃС‚Рё РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100;
 
-	// Переменная частота движения
+	// РџРµСЂРµРјРµРЅРЅР°СЏ С‡Р°СЃС‚РѕС‚Р° РґРІРёР¶РµРЅРёСЏ
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveRate = 0.005f;
 
-	// Переменная дистанция полета
+	// РџРµСЂРµРјРµРЅРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ РїРѕР»РµС‚Р°
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float FlyRange = 10000.f;
 
-	// Пременная урона
+	// РџСЂРµРјРµРЅРЅР°СЏ СѓСЂРѕРЅР°
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 		float Damage = 1;
 
-	// Пременная таймера
+	// РџСЂРµРјРµРЅРЅР°СЏ С‚Р°Р№РјРµСЂР°
 	FTimerHandle MovementTimerHandle; // Timer
 
 public:	
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Иницилизация объекта
+	// РРЅРёС†РёР»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р°
 	AProjectTile();
 
-	// Функция Начала движения
+	// Р¤СѓРЅРєС†РёСЏ РќР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ
 	void Start();
 
 protected:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Функция пересечения объекта с другими объектами
+	// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ РґСЂСѓРіРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 	UFUNCTION()
 		void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult); // Collision ProjectTile
 
-	// Функция движения 
+	// Р¤СѓРЅРєС†РёСЏ РґРІРёР¶РµРЅРёСЏ 
 	UFUNCTION()
 		void Move();
 

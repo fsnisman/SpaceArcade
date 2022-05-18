@@ -1,5 +1,5 @@
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "StateVictoryWidget.h"
@@ -9,37 +9,37 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 
 /*
-*  Код
+*  РљРѕРґ
 */
 
-// Инициализация виджета
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІРёРґР¶РµС‚Р°
 void UStateVictoryWidget::NativeConstruct()
 {
-	// Каст на пешку игрока и данных игрока
+	// РљР°СЃС‚ РЅР° РїРµС€РєСѓ РёРіСЂРѕРєР° Рё РґР°РЅРЅС‹С… РёРіСЂРѕРєР°
 	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	ABalancePlayerState* playerState = Cast<ABalancePlayerState>(playerShip->GetPlayerState());
 
-	// Динамическая инициализация функции "Нажатие на кнопку возращение в меню"
+	// Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё "РќР°Р¶Р°С‚РёРµ РЅР° РєРЅРѕРїРєСѓ РІРѕР·СЂР°С‰РµРЅРёРµ РІ РјРµРЅСЋ"
 	if (MenuBackButton)
 	{
 		MenuBackButton->OnClicked.AddDynamic(this, &UStateVictoryWidget::OnButtonMenuBackClicked);
 	}
 
-	// Инициализация подсчета монет от общего значения данных у игрока
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕРґСЃС‡РµС‚Р° РјРѕРЅРµС‚ РѕС‚ РѕР±С‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ РґР°РЅРЅС‹С… Сѓ РёРіСЂРѕРєР°
 	for (int i = 0; Coin <= playerState->Coin; i++)
 	{
 		Coin++;
 		CoinTextCount->SetText(FText::AsNumber(Coin));
 	}
 
-	// Инициализация подсчета очков от общего значения данных у игрока
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕРґСЃС‡РµС‚Р° РѕС‡РєРѕРІ РѕС‚ РѕР±С‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ РґР°РЅРЅС‹С… Сѓ РёРіСЂРѕРєР°
 	for (int i = 0; Score <= playerState->iScore; i++)
 	{
 		Score++;
 		ScoreTextCount->SetText(FText::AsNumber(Score));
 	}
 	
-	// Инициализация подсчета врагов от общего значения данных у игрока
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕРґСЃС‡РµС‚Р° РІСЂР°РіРѕРІ РѕС‚ РѕР±С‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ РґР°РЅРЅС‹С… Сѓ РёРіСЂРѕРєР°
 	for (int i = 0; Enemy <= playerState->EnemyCount; i++)
 	{
 		Enemy++;
@@ -47,11 +47,11 @@ void UStateVictoryWidget::NativeConstruct()
 	}
 }
 
-// Нажатие на кнопку возращение в меню
+// РќР°Р¶Р°С‚РёРµ РЅР° РєРЅРѕРїРєСѓ РІРѕР·СЂР°С‰РµРЅРёРµ РІ РјРµРЅСЋ
 void UStateVictoryWidget::OnButtonMenuBackClicked()
 {
-	// Открыть уровень меню
+	// РћС‚РєСЂС‹С‚СЊ СѓСЂРѕРІРµРЅСЊ РјРµРЅСЋ
 	UGameplayStatics::OpenLevel(this, "MenuLevel");
-	// Удалить все выджеты
+	// РЈРґР°Р»РёС‚СЊ РІСЃРµ РІС‹РґР¶РµС‚С‹
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
 }

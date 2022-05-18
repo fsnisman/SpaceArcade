@@ -1,12 +1,12 @@
 /*
-*	Класс State Victory Widget для отображение статистики победы,
-*	где выводятся данный заработанный очков, монет и уничтоженных врагов.
+*	РљР»Р°СЃСЃ State Victory Widget РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё РїРѕР±РµРґС‹,
+*	РіРґРµ РІС‹РІРѕРґСЏС‚СЃСЏ РґР°РЅРЅС‹Р№ Р·Р°СЂР°Р±РѕС‚Р°РЅРЅС‹Р№ РѕС‡РєРѕРІ, РјРѕРЅРµС‚ Рё СѓРЅРёС‡С‚РѕР¶РµРЅРЅС‹С… РІСЂР°РіРѕРІ.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "PlayerShipPawn.h"
@@ -22,7 +22,7 @@
 #include "StateVictoryWidget.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -33,81 +33,81 @@ class SPACEARCADE_API UStateVictoryWidget : public UUserWidget
 public:
 
 	//////////////////////////
-	//// Компоненты
+	//// РљРѕРјРїРѕРЅРµРЅС‚С‹
 
-	// Компонент Канвас
+	// РљРѕРјРїРѕРЅРµРЅС‚ РљР°РЅРІР°СЃ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UCanvasPanel* MainCanvasPanel;
 
-	// Комопнент кнопки в возращение в меню
+	// РљРѕРјРѕРїРЅРµРЅС‚ РєРЅРѕРїРєРё РІ РІРѕР·СЂР°С‰РµРЅРёРµ РІ РјРµРЅСЋ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UButton* MenuBackButton;
 
-	// Компонент отображение текста монет
+	// РљРѕРјРїРѕРЅРµРЅС‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚Р° РјРѕРЅРµС‚
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* CoinText;
 
-	// Компонент отображение текста врагов
+	// РљРѕРјРїРѕРЅРµРЅС‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚Р° РІСЂР°РіРѕРІ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* EnemyText;
 
-	// Компонент отображение текста очков
+	// РљРѕРјРїРѕРЅРµРЅС‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚Р° РѕС‡РєРѕРІ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* ScoreCount;
 
-	// Компонент текста для значение заработанных монет
+	// РљРѕРјРїРѕРЅРµРЅС‚ С‚РµРєСЃС‚Р° РґР»СЏ Р·РЅР°С‡РµРЅРёРµ Р·Р°СЂР°Р±РѕС‚Р°РЅРЅС‹С… РјРѕРЅРµС‚
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* CoinTextCount;
 
-	// Компонент текста для значение уничтоженых врагов
+	// РљРѕРјРїРѕРЅРµРЅС‚ С‚РµРєСЃС‚Р° РґР»СЏ Р·РЅР°С‡РµРЅРёРµ СѓРЅРёС‡С‚РѕР¶РµРЅС‹С… РІСЂР°РіРѕРІ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* EnemyTextCount;
 
-	// Компонент текста для значение заработанных очков
+	// РљРѕРјРїРѕРЅРµРЅС‚ С‚РµРєСЃС‚Р° РґР»СЏ Р·РЅР°С‡РµРЅРёРµ Р·Р°СЂР°Р±РѕС‚Р°РЅРЅС‹С… РѕС‡РєРѕРІ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* ScoreTextCount;
 
-	// Компонент изображение монет
+	// РљРѕРјРїРѕРЅРµРЅС‚ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РјРѕРЅРµС‚
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UImage* ImageCoin;
 
-	// Компонент изображение врагов
+	// РљРѕРјРїРѕРЅРµРЅС‚ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РІСЂР°РіРѕРІ
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UImage* ImageEnemy;
 
-	// Компонент изображение заднего фона
+	// РљРѕРјРїРѕРЅРµРЅС‚ РёР·РѕР±СЂР°Р¶РµРЅРёРµ Р·Р°РґРЅРµРіРѕ С„РѕРЅР°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UImage* ImageBackground;
 
 protected:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Инициализации виджета
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёРё РІРёРґР¶РµС‚Р°
 	virtual void NativeConstruct() override;
 
 public:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Нажатие на кнопку возращение в меню
+	// РќР°Р¶Р°С‚РёРµ РЅР° РєРЅРѕРїРєСѓ РІРѕР·СЂР°С‰РµРЅРёРµ РІ РјРµРЅСЋ
 	UFUNCTION()
 		void OnButtonMenuBackClicked();
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Значение очков
+	// Р—РЅР°С‡РµРЅРёРµ РѕС‡РєРѕРІ
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Score = 0;
 
-	// Значение монет
+	// Р—РЅР°С‡РµРЅРёРµ РјРѕРЅРµС‚
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Coin = 0;
 
-	// Значение врагов
+	// Р—РЅР°С‡РµРЅРёРµ РІСЂР°РіРѕРІ
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Enemy = 0;
 };

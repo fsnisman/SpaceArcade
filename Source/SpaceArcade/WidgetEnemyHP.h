@@ -1,12 +1,12 @@
 /*
-*	Класс Widget Enemy HP для отображение здоровья врагов
-*	мировом пространстве.
+*	РљР»Р°СЃСЃ Widget Enemy HP РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ Р·РґРѕСЂРѕРІСЊСЏ РІСЂР°РіРѕРІ
+*	РјРёСЂРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ.
 */
 
 #pragma once
 
 /*
-*  Библеотеки
+*  Р‘РёР±Р»РµРѕС‚РµРєРё
 */
 
 #include "EnemyAIPawn.h"
@@ -18,7 +18,7 @@
 #include "WidgetEnemyHP.generated.h"
 
 /*
-*  Класс
+*  РљР»Р°СЃСЃ
 */
 
 UCLASS()
@@ -29,38 +29,38 @@ class SPACEARCADE_API UWidgetEnemyHP : public UUserWidget
 protected:
 
 	//////////////////////////
-	//// Компоненты
+	//// РљРѕРјРїРѕРЅРµРЅС‚С‹
 
-	// Компонент прогресс бара
+	// РљРѕРјРїРѕРЅРµРЅС‚ РїСЂРѕРіСЂРµСЃСЃ Р±Р°СЂР°
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UProgressBar* EnemyBarHP;
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Инициализация виджета
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІРёРґР¶РµС‚Р°
 	virtual void NativeConstruct() override;
 
-	// Обновление виджета каждый игровой тик
+	// РћР±РЅРѕРІР»РµРЅРёРµ РІРёРґР¶РµС‚Р° РєР°Р¶РґС‹Р№ РёРіСЂРѕРІРѕР№ С‚РёРє
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	//////////////////////////
-	//// Переменные
+	//// РџРµСЂРµРјРµРЅРЅС‹Рµ
 
-	// Массив врагов
+	// РњР°СЃСЃРёРІ РІСЂР°РіРѕРІ
 	TWeakObjectPtr<AEnemyAIPawn> OwnerEnemy;
 
 public:
 
 	//////////////////////////
-	//// Функции
+	//// Р¤СѓРЅРєС†РёРё
 
-	// Установка здоровья врагам
+	// РЈСЃС‚Р°РЅРѕРІРєР° Р·РґРѕСЂРѕРІСЊСЏ РІСЂР°РіР°Рј
 	void SetHealt(float CurretHealth, float MaxHealth);
 
-	// Обновление здоровья
+	// РћР±РЅРѕРІР»РµРЅРёРµ Р·РґРѕСЂРѕРІСЊСЏ
 	bool UpdateHealth(float CurretHealth, float MaxHealth);
 
-	// Установка виджета на врага
+	// РЈСЃС‚Р°РЅРѕРІРєР° РІРёРґР¶РµС‚Р° РЅР° РІСЂР°РіР°
 	void SetOwner(AEnemyAIPawn* InEnemy){ OwnerEnemy = InEnemy; }
 };
