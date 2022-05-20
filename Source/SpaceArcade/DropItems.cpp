@@ -35,6 +35,8 @@ void ADropItems::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 	APlayerShipPawn* playerShip = Cast<APlayerShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	// Каста на данные игрока
 	ABalancePlayerState* playerState = Cast<ABalancePlayerState>(playerShip->GetPlayerState());
+	// Каст на глобальную информацию
+	UPlayerGameInstance* GameInstance = Cast<UPlayerGameInstance>(GetWorld()->GetGameInstance());
 
 	// Переменная владельца
 	AActor* owner = GetOwner();
@@ -93,6 +95,8 @@ void ADropItems::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffect, GetActorLocation());
 			// Запись прибалвение шарпов
 			playerState->Sharp += DropCountSharp;
+			// Изменения значний в глобальной информации
+			GameInstance->ShardOfPlayer += DropCountSharp;
 			// Уничтожения
 			Destroy();
 		}

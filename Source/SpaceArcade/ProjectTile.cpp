@@ -38,6 +38,12 @@ void AProjectTile::Start()
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectTile::Move, MoveRate, true, MoveRate);
 	// Уничтожение объекта при пройденном расстоянии
 	SetLifeSpan(FlyRange / MoveSpeed);
+
+	// Каст на глобальную ифнормацию
+	UPlayerGameInstance* GameInstance = Cast<UPlayerGameInstance>(GetWorld()->GetGameInstance());
+
+	// Обновление урона
+	Damage *= GameInstance->UpgradeDamage;
 }
 
 // Функция пересечения объекта с другими объектами

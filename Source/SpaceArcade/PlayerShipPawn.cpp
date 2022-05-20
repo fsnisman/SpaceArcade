@@ -92,10 +92,25 @@ void APlayerShipPawn::BeginPlay()
 	ShootEffectOne->DeactivateSystem();
 	ShootEffectTwo->DeactivateSystem();
 
-	// Запуск камеры шейк
-	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShakeStart, 1.0f);
-	// Запуск таймера стрельбы
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 1, true, FireTimer);
+	// Каст на глобальную ифнормацию
+	UPlayerGameInstance* GameInstance = Cast<UPlayerGameInstance>(GetWorld()->GetGameInstance());
+
+	// Обновление здоровья
+	HealthComponent->MaxHealth *= GameInstance->UpgradeHealht;
+	HealthComponent->CurrentHealth *= GameInstance->UpgradeHealht;
+
+	if (!bActiveMenuWidget)
+	{
+		// Запуск камеры шейк
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CamShakeStart, 1.0f);
+		// Запуск таймера стрельбы
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerShipPawn::Fire, 1, true, FireTimer);
+	}
+	else 
+	{
+		// Открепить рычаг от пешки игрока
+		SpringArm->DetachExternalPackage();
+	}
 }
 
 // Обновление объекты в каждом тике

@@ -45,6 +45,14 @@ void UStateVictoryWidget::NativeConstruct()
 		Enemy++;
 		EnemyTextCount->SetText(FText::AsNumber(Enemy));
 	}
+
+	// Каст на глобальную информацию
+	UPlayerGameInstance* GameInstance = Cast<UPlayerGameInstance>(GetWorld()->GetGameInstance());
+
+	// Изменения значний в глобальной информации
+	GameInstance->ScoreOfPlayre += Score;
+	GameInstance->CoinOfPlayer += Coin;
+	GameInstance->EnemyDiedCountOfPlayer += playerState->EnemyCount;
 }
 
 // Нажатие на кнопку возращение в меню

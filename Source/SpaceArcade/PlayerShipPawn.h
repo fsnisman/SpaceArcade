@@ -17,6 +17,7 @@
 #include "HealthComponent.h"
 #include "ProjectTile.h"
 #include "BalancePlayerState.h"
+#include "PlayerGameInstance.h"
 
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>
@@ -224,6 +225,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LevelComplited")
 		bool LevelComplitet = false;
 
+	// Проверка на активный виджет меню
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		bool bActiveMenuWidget = false;
+
+
 	// Готовность стрельбы
 	bool ReadyFire = true;
 	
@@ -232,6 +238,7 @@ public:
 
 	// Триггер на спавн текста босса
 	bool SpawnTextFightBoss = false;
+	
 
 	//////////////////////////
 	//// Функции

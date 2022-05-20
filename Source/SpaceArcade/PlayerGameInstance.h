@@ -21,7 +21,7 @@ UCLASS()
 class SPACEARCADE_API UPlayerGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	//////////////////////////
@@ -31,23 +31,28 @@ public:
 	int ScoreOfPlayre = 0;
 	int CoinOfPlayer = 0;
 	int ShardOfPlayer = 0;
+	int EnemyDiedCountOfPlayer = 0;
 
 	// Переменные улучшения
-	float UpgradeDamage = 0;
-	float UpgradeHealht = 0;
-	float UpgradeReloadSpecialCannon = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float UpgradeDamage = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float UpgradeHealht = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float UpgradeReloadSpecialCannon = 1;
 
-	// Переменные уровня улучшения
-	int LevelUpgradeDamage = 0;
-	int LevelUpgradeHealht = 0;
-	int LevelUpgradeReloadSpecialCannon = 0;
+
+	// Переменные максимлаьного уровня улучшения
+	int LevelUpgradeDamage = 1;
+	int LevelUpgradeHealht = 1;
+	int LevelUpgradeReloadSpecialCannon = 1;
 
 	// Констатные перменные максимального уровня улучшения
 	const int LevelUpgradeDamageMax = 20;
 	const int LevelUpgradeHealhtMax = 20;
 	const int LevelUpgradeReloadSpecialCannonMax = 20;
 
-	// Переменные для достижений
+	// Переменные для максимального количества достижений
 	int ChallengeScoreMax = 3000;
 	int ChallengeEnemyDiedMax = 100;
 };

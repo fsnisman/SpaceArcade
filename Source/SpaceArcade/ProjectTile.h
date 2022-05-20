@@ -8,6 +8,8 @@
 *  Библеотеки
 */
 
+#include "PlayerGameInstance.h"
+
 #include "Math/UnrealMathUtility.h"
 
 #include "Components/AudioComponent.h"

@@ -1,5 +1,5 @@
 /*
-*	Класс Menu Widget для отображение меню.
+*	Класс Achivment Widget для отображение достижений игрока.
 */
 
 #pragma once
@@ -17,20 +17,20 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/ProgressBar.h"
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MenuWidget.generated.h"
+#include "AchivmentWidget.generated.h"
 
-/*
-*  Класс
-*/
-
+/**
+ * 
+ */
 UCLASS()
-class SPACEARCADE_API UMenuWidget : public UUserWidget
+class SPACEARCADE_API UAchivmentWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	//////////////////////////
@@ -56,9 +56,21 @@ public:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UButton* AchivmentButton;
 
-	// Компонент кнопки увроней
+	// Компонент кнопки забрать награду за очки
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-		UButton* PlayLevelButton;
+		UButton* GetPrizeScoreButton;
+
+	// Компонент кнопки забрать награду за достижение
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UButton* GetPrizeEnemyButton;
+
+	// Компонент прогресса бара выполнение за заработанные очки
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UProgressBar* PrizeScorePB;
+
+	// Компонент прогресса бара выполенине за уничтожение врагов
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UProgressBar* PrizeEnemyPB;
 
 	// Компонент текст монет
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
@@ -68,9 +80,21 @@ public:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UTextBlock* ShareTextCount;
 
-	// Компонент текст очков
+	// Компонент текст заработанных очков
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-		UTextBlock* ScoreTextCount;
+		UTextBlock* EarnedScoreTextCount;
+
+	// Компонент текст уничтоженных врагов
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UTextBlock* EarnedEnemyTextCount;
+
+	// Компонент текст максимальных заработанных очков
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UTextBlock* EarnedScoreTextCountMax;
+
+	// Компонент текст максимальных уничтоженных врагов
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UTextBlock* EarnedEnemyTextCountMax;
 
 	// Компонент изображения монет
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
@@ -80,22 +104,30 @@ public:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 		UImage* ImageShare;
 
+	// Компонент изображения шарпов
+	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+		UImage* BackgroundAchivement;
+
 protected:
 
 	//////////////////////////
 	//// Функции
 
-	// Функция для нажитии кнопки воспроизведния игры
+	// Функция для нажитии кнопки перехода на меню
 	UFUNCTION()
-		void OnButtonPlayGameClicked();
+		void OnButtonMenuClicked();
 
 	// Функция для нажитии кнопки перехода на улучшение
 	UFUNCTION()
 		void OnButtonUpgradeClicked();
 
-	// Функция для нажитии кнопки перехода на достижения
+	// Функция для нажитии кнопки получение приза за полученные очки
 	UFUNCTION()
-		void OnButtonAchivmentGameClicked();
+		void OnGetPrizeScoreButtonClicked();
+
+	// Функция для нажитии кнопки получение приза за уничтоженных врагов
+	UFUNCTION()
+		void OnGetPrizeEnemyButtonClicked();
 
 	// Иницилизация виджета
 	virtual void NativeConstruct() override;
@@ -104,8 +136,7 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	//////////////////////////
-	//// Перменные
+	//// Переменные
 
-	// Проверка на меню виджет
-	bool bMenuWidget = false;
+	int Prize = 1000;
 };

@@ -10,6 +10,7 @@
 */
 
 #include "PlayerShipPawn.h"
+#include "PlayerGameInstance.h"
 
 #include "Components/CanvasPanel.h"
 #include "Components/GridPanel.h"

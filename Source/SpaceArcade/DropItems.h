@@ -10,6 +10,8 @@
 *  Библеотеки
 */
 
+#include "PlayerGameInstance.h"
+
 #include <Components/StaticMeshComponent.h>
 #include "Components/BoxComponent.h"
 #include "Components/AudioComponent.h"
