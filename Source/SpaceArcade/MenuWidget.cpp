@@ -61,7 +61,7 @@ void UMenuWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void UMenuWidget::OnButtonPlayGameClicked()
 {
 	// Открыть игровой уровень
-	UGameplayStatics::OpenLevel(this, "Level1");
+	UGameplayStatics::OpenLevel(this, "Level_1");
 	// Удалить виджеты
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
 }
